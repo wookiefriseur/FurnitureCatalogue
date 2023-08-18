@@ -584,12 +584,18 @@ function FurC.DeleteCharacter(characterName)
   end
 
   for recipeKey, recipeArray in pairs(FurC.settings.data) do
-    if recipeArray.craftable then
+    if nil ~= recipeArray.craftingSkill then
+      FurC.Logger:Debug("%s", recipeArray)
       recipeArray.characters[characterName] = nil
     end
   end
 
-  local guiDropdownEntries = FurC_Dropdown.comboBox.m_sortedItems
+  FurC.Logger:Info(
+    "%s deleted from |c2266ffFurniture Catalogue|r database. Entry will disappear from settings dropdown after the next reloadui.",
+    characterName
+  )
+
+  local guiDropdownEntries = FurC_OptionsPanelCombobox1.m_comboBox.m_sortedItems
   if nil == guiDropdownEntries then
     return
   end
@@ -599,10 +605,6 @@ function FurC.DeleteCharacter(characterName)
       return
     end
   end
-  FurC.Logger:Info(
-    "%s deleted from |c2266ffFurniture Catalogue|r database. Entry will disappear from settings dropdown after the next reloadui.",
-    characterName
-  )
 end
 
 function FurC.GetCurrentCharacterName()

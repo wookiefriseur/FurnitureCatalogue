@@ -51,10 +51,6 @@ function FurC.GUIButtonHideOnMouseUp()
   FurCGui:SetHidden(true)
 end
 
-local function forceRefresh()
-  FurC.WipeDatabase()
-end
-
 function FurC.GUIButtonRefreshOnMouseUp(control, mouseButton)
   if mouseButton == 1 then
     FurC.ScanRecipes(false, true)
@@ -65,8 +61,10 @@ function FurC.GUIButtonRefreshOnMouseUp(control, mouseButton)
       LAM.util.ShowConfirmationDialog(
         GetString(SI_FURC_DIALOGUE_RESET_DB_HEADER),
         GetString(SI_FURC_DIALOGUE_RESET_DB_BODY),
-        forceRefresh
+        FurC.WipeDatabase()
       )
+    else
+      FurC.WipeDatabase()
     end
   end
 end

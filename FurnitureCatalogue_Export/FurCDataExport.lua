@@ -3,7 +3,7 @@ FurCEx = {}
 local this = FurCEx
 
 this.name = "FurnitureCatalogue_Export"
-this.version = 2000000
+this.version = 2001000
 this.author = "manavortex"
 
 local defaults = {}
@@ -16,6 +16,11 @@ local function getSortTable(tbl)
   end
   table.sort(list)
   return list
+end
+
+function this.Dump()
+  this.settings = FurC.settings.data
+  ReloadUI("ingame")
 end
 
 function this.Export()

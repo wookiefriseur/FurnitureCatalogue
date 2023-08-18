@@ -21,12 +21,20 @@ function FurCEx.makeSettings()
         .. "SavedVariables folder inside  FurnitureCatalogue_Export.lua \n"
       ),
     },
-    { -- button: Reset database
+    { -- button: Export crafting list
       type = "button",
-      name = "Export data",
+      name = "Export crafting data",
       warning = "This will reload the UI",
       func = function()
         FurCEx.Export()
+      end,
+    },
+    { -- button: Dump whole database
+      type = "button",
+      name = "Dump whole Database",
+      warning = "This will reload the UI",
+      func = function()
+        FurCEx.Dump()
       end,
     },
   }

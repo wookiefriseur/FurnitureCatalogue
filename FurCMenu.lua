@@ -57,7 +57,7 @@ function FurC.CreateSettings(savedVars, defaults)
         FurC.UpdateGui()
       end,
     },
-    { -- button: Re-scan data
+    { -- button: Re-scan char
       type = "button",
       name = GetString(SI_FURC_STRING_MENU_SCAN_CHAR_NAME),
       tooltip = GetString(SI_FURC_STRING_MENU_SCAN_CHAR_TT),

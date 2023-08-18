@@ -923,4 +923,11 @@ LibCharacterKnowledge.PRIORITY_CLASSES = 13
 LibCharacterKnowledge.EVENT_INITIALIZED = 1
 LibCharacterKnowledge.EVENT_UPDATE_REFRESH = 2
 
+-- UI Elements by LAM
+---@class Control
+FurC_OptionsPanelCombobox1 = {}
+
+---@class ZO_ComboBox_Base
+FurC_OptionsPanelCombobox1.m_comboBox = {}
+
 -- ////// END   : Manual entries and overrides

@@ -9,7 +9,7 @@
 
 	First level: All tables will be ordered by game version.
 
-		== Game version constants are defined in "_Constants.lua" - this file gets loaded first ==
+		== Game version constants are defined in "FurCConstants.lua" - this file gets loaded first ==
 
 		This is part of any saved variable array and allows pre-filtering and faster lookup.
 		Game version is also the filtering criterion for the "game version" dropdown in the UI.

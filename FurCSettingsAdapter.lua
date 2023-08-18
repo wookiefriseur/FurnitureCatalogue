@@ -437,9 +437,9 @@ function FurC.SetDropdownChoice(dropdownName, textValue, dropdownIndex)
 
   FurC.Logger:Verbose("SetDropdownChoice(%s, %s (Index: %s))", dropdownName, textValue, dropdownIndex)
 
-  -- if we're setting the dropdown menu "source" to "purchaseable", set "character" to "All"
   FurC.DropdownChoices[dropdownName] = dropdownIndex
-
+  
+  -- if we're setting the dropdown menu "source" to "purchaseable", set "character" to "All"
   if dropdownName == "Source" then
     if dropdownIndex > src.CRAFTING_UNKNOWN or dropdownIndex < src.CRAFTING then
       FurC.DropdownChoices["Character"] = 1
@@ -571,12 +571,10 @@ function FurC.WipeDatabase()
   FurC.settings.accountCharacters = {}
   FurC.settings.excelExport = {}
   FurC.ScanRecipes(true, true)
-  -- d("FurnitureCatalogue: Scan complete")
+  FurC.Logger:Info("Scan complete")
 end
 
 function FurC.DeleteCharacter(characterName)
-  FurC.Logger:Info("Now deleting recipe knowledge for %s", characterName)
-
   for key, value in pairs(FurC.settings.accountCharacters) do
     if value == characterName then
       FurC.settings.accountCharacters[key] = false
@@ -585,7 +583,6 @@ function FurC.DeleteCharacter(characterName)
 
   for recipeKey, recipeArray in pairs(FurC.settings.data) do
     if nil ~= recipeArray.craftingSkill then
-      FurC.Logger:Debug("%s", recipeArray)
       recipeArray.characters[characterName] = nil
     end
   end

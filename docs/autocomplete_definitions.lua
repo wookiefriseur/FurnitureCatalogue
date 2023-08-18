@@ -923,7 +923,20 @@ LibCharacterKnowledge.PRIORITY_CLASSES = 13
 LibCharacterKnowledge.EVENT_INITIALIZED = 1
 LibCharacterKnowledge.EVENT_UPDATE_REFRESH = 2
 
--- UI Elements by LAM
+---@class ESO_PROFILER
+---@field GenerateReport fun()
+ESO_PROFILER = {}
+function StartScriptProfiler() end
+function StopScriptProfiler() end
+
+-- UI Element overrides
+
+---@class EditControl:Control
+---@field TakeFocus fun()
+---@field ClearSelection fun()
+---@field Clear fun()
+---@field InsertText fun(self: EditControl, text: string)
+
 ---@class Control
 FurC_OptionsPanelCombobox1 = {}
 

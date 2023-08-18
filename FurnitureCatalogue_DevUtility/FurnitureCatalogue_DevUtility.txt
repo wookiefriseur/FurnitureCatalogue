@@ -5,7 +5,7 @@
 ## AddonVersion: 2001000
 ## APIVersion: 101045
 ## DependsOn: FurnitureCatalogue
-## OptionalDependsOn: sidTools LibDebugLogger DebugLogViewer
+## OptionalDependsOn: sidTools ESOProfiler LibDebugLogger DebugLogViewer
 
 Bindings.xml
 xml.xml
@@ -16,3 +16,5 @@ ContextMenu.lua
 DumpFurniture_sidTools.lua
 
 Custom.lua
+
+Tests.lua

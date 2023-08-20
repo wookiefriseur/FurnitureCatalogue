@@ -943,4 +943,22 @@ FurC_OptionsPanelCombobox1 = {}
 ---@class ZO_ComboBox_Base
 FurC_OptionsPanelCombobox1.m_comboBox = {}
 
+--[[ ToDo: hstructure syntax support (low priority)
+
+hstructure PERSON
+  name: string
+  age: number
+end
+
+function hstructThis()
+  local p1 : PERSON = hmake PERSON { name = "Peter", age = 12}
+  local p2 : PERSON = hmake PERSON { name = "Sarah", age = 34}
+  local people = { p1, p2 }
+  for index, value in ipairs(people) do
+    d(zo_strformat("Name: <<1>> , Age: <<2>>", value.name, value.age))
+  end
+end
+
+]]
+
 -- ////// END   : Manual entries and overrides

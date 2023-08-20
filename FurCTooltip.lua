@@ -9,9 +9,8 @@ local function tryColorize(text)
   return text:gsub("cannot craft", "|cFF0000cannot craft"):gsub("Can be crafted", "|c00FF00Can be crafted")
 end
 
-local TYPE_STRING = "string"
 local function add(t, arg)
-  if nil ~= arg and (TYPE_STRING ~= type(t) or #t > 0) then
+  if nil ~= arg and ("string" ~= type(t) or #t > 0) then
     t[#t + 1] = arg
   end
   return t
@@ -31,8 +30,8 @@ local function addTooltipData(control, itemLink)
   if not (isRecipe or IsItemLinkPlaceableFurniture(itemLink)) then
     return
   end
-  itemId = GetItemLinkItemId(itemLink)
-  recipeArray = FurC.Find(itemLink)
+  local itemId = GetItemLinkItemId(itemLink)
+  local recipeArray = FurC.Find(itemLink)
 
   -- |H0:item:118206:5:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h
 

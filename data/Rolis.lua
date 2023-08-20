@@ -16,23 +16,23 @@ FurC.Faustina[ver.ENDLESS] = {
 
 -- 18 Flames of Ambition
 FurC.RolisRecipes[ver.FLAMES] = {
-  [171803] = 125, -- Blueprint: Solitude Well, Noble
-  [171806] = 125, -- Design: Provisioning Station, Solitude Grill
-  [171801] = 125, -- Diagram: Dwarven Minecart, Ornate
-  [171805] = 125, -- Formula: Vampiric Cauldron, Distilled Coagulant
-  [171802] = 125, -- Pattern: Solitude Yarn Rack, Colorful
-  [171804] = 125, -- Praxis: Solitude Hearth, Rounded Tall
   [171807] = 125, -- Sketch: Dwarven Crystal Sconce, Mirror
+  [171806] = 125, -- Design: Provisioning Station, Solitude Grill
+  [171805] = 125, -- Formula: Vampiric Cauldron, Distilled Coagulant
+  [171804] = 125, -- Praxis: Solitude Hearth, Rounded Tall
+  [171803] = 125, -- Blueprint: Solitude Well, Noble
+  [171802] = 125, -- Pattern: Solitude Yarn Rack, Colorful
+  [171801] = 125, -- Diagram: Dwarven Minecart, Ornate
 }
 
 -- 14 Harrowstorm
 FurC.FaustinaRecipes[ver.HARROW] = {
-  [159501] = 125, -- Praxis: Khajiit Sigil, Moon Cycle
-  [159499] = 125, -- Pattern: Elsweyr Bed, Senche-Raht
-  [159502] = 125, -- Formula: Elsweyr Mortar and Pestle, Engraved
-  [159498] = 125, -- Diagram: Elsweyr Gong, Ornate
   [159503] = 125, -- Design: Elsweyr Bread Basket, Feast-Day
+  [159502] = 125, -- Formula: Elsweyr Mortar and Pestle, Engraved
+  [159501] = 125, -- Praxis: Khajiit Sigil, Moon Cycle
   [159500] = 125, -- Blueprint: Elsweyr Well, Covered
+  [159499] = 125, -- Pattern: Elsweyr Bed, Senche-Raht
+  [159498] = 125, -- Diagram: Elsweyr Gong, Ornate
 }
 
 -- 10 Wrathstone
@@ -99,34 +99,23 @@ FurC.Rolis[ver.DRAGONS] = {
 }
 
 -- 2 Homestead
-FurC.Rolis[ver.HOMESTEAD] = {
-  -- Alchemy station
-  [118328] = 35,
-  -- Blacksmithing station
-  [119781] = 35,
-  -- Clothing station
-  [119707] = 35,
-  -- Dye Station
-  [118329] = 35,
-  -- Enchanting station
-  [118330] = 35,
-  -- Provisioning station
-  [118327] = 35,
-  -- Woodworking station
-  [119744] = 35,
 
-  -- Attunable Blacksmithing station
-  [119594] = 250,
-  -- Attunable Clothing station
-  [119821] = 250,
-  -- Attunable Woodworking station
-  [119822] = 250,
+FurC.Rolis[ver.HOMESTEAD] = {
+  [119822] = 250, -- Attunable Woodworking station
+  [119821] = 250, -- Attunable Clothing station
+  [119781] = 35, -- Blacksmithing station
+  [119744] = 35, -- Woodworking station
+  [119707] = 35, -- Clothing station
+  [119594] = 250, -- Attunable Blacksmithing station
+  [118330] = 35, -- Enchanting station
+  [118329] = 35, -- Dye Station
+  [118328] = 35, -- Alchemy station
+  [118327] = 35, -- Provisioning station
 }
 
--- 2 Homestead
 FurC.RolisRecipes[ver.HOMESTEAD] = {
-  [126582] = 275, -- Praxis: Target Centurion, Dwarf-Brass
   [126583] = 450, -- Praxis: Target Centurion, Robust Refabricated
-  [119592] = 125, -- Praxis: Target Skeleton, Humanoid
+  [126582] = 275, -- Praxis: Target Centurion, Dwarf-Brass
   [121315] = 200, -- Praxis: Target Skeleton, Robust Humanoid
+  [119592] = 125, -- Praxis: Target Skeleton, Humanoid
 }

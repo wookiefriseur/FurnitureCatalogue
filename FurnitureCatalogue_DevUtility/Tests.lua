@@ -1,6 +1,11 @@
--- Tests and benchmark scenarios
+-- Playground for Tests and benchmark scenarios
+-- see https://github.com/manavortex/FurnitureCatalogue/blob/master/docs/TESTS.md
 
 local this = FurCDev
+
+local function addTraceMarker(msg)
+  RecordScriptProfilerUserEvent(msg)
+end
 
 -- Helper Functions for Prerequisites
 
@@ -8,14 +13,14 @@ local function disableDebug()
   FurC.SetEnableDebug(false)
 end
 
----@param enabled bool
-local function setShowCrowns(enabled)
-  FurC.SetHideCrownStoreItems(enabled)
+---@param isHidden bool
+local function setHideCrowns(isHidden)
+  FurC.SetHideCrownStoreItems(isHidden)
 end
 
----@param enabled bool
-local function setShowRumour(enabled)
-  FurC.SetHideRumourRecipes(enabled)
+---@param isHidden bool
+local function setHideRumour(isHidden)
+  FurC.SetHideRumourRecipes(isHidden)
 end
 
 local function rescanDB()
@@ -33,26 +38,27 @@ local function rescanChar()
   FurC.ScanRecipes(false, true)
 end
 
-local function clearAll()
-  -- Source, Version, Char off
-  -- TODO: implement turning Source, Version, Char off
+local function setDropdownChoice(category, choiceId)
+  local ddSrcTxt = FurC.DropdownData["Choices" .. category][choiceId]
+  FurC.SetDropdownChoice(category, ddSrcTxt, choiceId)
+end
 
+local function clearAll()
   FurC.SetFilterCraftingType(0) -- reset crafting
   FurC.SetFilterQuality(0) -- reset quality
 
-  -- Force NONE instead of default choice to really clear it
-  FurC.SetDropdownChoice("Character", "", 0)
-  FurC.SetDropdownChoice("Source", "", FurC.Constants.ItemSources.NONE)
-  FurC.SetDropdownChoice("Version", "", FurC.Constants.Versioning.NONE)
+  -- Char, Source, Version off
+  setDropdownChoice("Character", 1) -- first entry is "Character filter: off"
+  setDropdownChoice("Source", FurC.Constants.ItemSources.NONE)
+  setDropdownChoice("Version", FurC.Constants.Versioning.NONE)
 
-  setShowCrowns(false)
-  setShowRumour(false)
+  setHideCrowns(true) -- hide crowns, ignoring user default setting
+  setHideRumour(true) -- hide rumours, ignoring user default setting
 end
 
 local function startProfiler()
-  if nil ~= ESO_PROFILER then
-    StartScriptProfiler()
-  end
+  assert(ESO_PROFILER, "EsoProfiler not found")
+  StartScriptProfiler()
 end
 
 local function stopProfiler()
@@ -68,7 +74,7 @@ end
 ---@param uiElement EditControl
 ---@param inputList table
 ---@param delay integer
-local function emulateTyping(uiElement, inputList, delay)
+local function emulateUserInput(uiElement, inputList, delay)
   -- In case there are onFocus listeners
 
   uiElement:TakeFocus()
@@ -91,7 +97,7 @@ local function emulateTyping(uiElement, inputList, delay)
 end
 
 -- Makes zo_callLater nesting unnecessary (combined with LibAsync)
-local function delayTask(task, delay)
+local function suspendTask(task, delay)
   task:Suspend()
   zo_callLater(function()
     task:Resume()
@@ -101,47 +107,50 @@ end
 -- Scenario Functions
 -- Should interact with UI instead of direct function calls, if possible.
 
+local delayTyping = 222
+local delayProfiler = 10000
+local delayUI = 1000
+local delaySearch = 5000
+
 -- Scenario 1: Re-Initialise database
 -- Profiling on UI reload crashes on my setup,
 --  but we can emulate a Furniture Catalogue boot phase by manually regenerating data.
 local function scenario1_init_db()
   local task = LibAsync:Create("scenario1_init_db")
   assert(task)
-  -- Prerequisites
   task
     :Call(function()
-      --disableDebug()
-      delayTask(task, 1000)
-    end)
-    :Then(function()
       FurnitureCatalogue_Toggle()
-      delayTask(task, 1000)
+      suspendTask(task, delayUI) -- wait for the UI to catch up
     end)
     :Then(function()
       clearAll()
-      delayTask(task, 10000) -- wait before profiling
+      suspendTask(task, delayProfiler) -- wait before starting the profiler
     end)
-    :Then(function()
+    :Then(function() -- ~00:00
+      disableDebug()
       startProfiler()
-      d("Started profiler")
+      addTraceMarker(task.name .. ",warmup")
+      suspendTask(task, 3 * delayUI) -- let the profiler warm up
+    end)
+    :Then(function() -- ~00:03
+      addTraceMarker(task.name .. ",rescanDB")
       rescanDB()
-      d("Rescanned DB")
+      suspendTask(task, delaySearch) -- wait for result list to catch up
     end)
-    :Then(function()
+    :Then(function() -- ~00:08
+      addTraceMarker(task.name .. ",rescanData")
       rescanData()
-      d("Rescanned data")
+      suspendTask(task, delaySearch) -- wait for result list to catch up
     end)
-    :Then(function()
+    :Then(function() -- ~00:13
+      addTraceMarker(task.name .. ",rescanChar")
       rescanChar()
-      d("Rescanned char")
+      suspendTask(task, 3 * delayUI) -- wait for char knowledge scan
     end)
-    :Then(function()
+    :Then(function() -- ~00:16
       FurnitureCatalogue_Toggle()
-      d("Toggled Furniture Catalogue again")
-    end)
-    :Then(function()
       stopProfiler()
-      d("Stopped profiler")
     end)
 end
 
@@ -153,25 +162,35 @@ local function scenario2_baseline_search()
   task
     :Call(function()
       FurnitureCatalogue_Toggle()
-      disableDebug()
+      suspendTask(task, delayUI) -- wait for the UI to catch up
+    end)
+    :Then(function()
       clearAll()
-      delayTask(task, 10000) -- wait before profiling
+      suspendTask(task, delayProfiler) -- wait before starting the profiler
     end)
-    :Then(function()
+    :Then(function() -- ~00:00
+      disableDebug()
       startProfiler()
-      local searchBox = FurC_SearchBox
-      emulateTyping(searchBox, { "b", "l", "e", "s", "s", "e", "d" }, 85)
-      delayTask(task, 5000) -- Wait for the search to catch up, before clearing it
+      addTraceMarker(task.name .. ",warmup")
+      suspendTask(task, 3 * delayUI) -- let the profiler warm up
     end)
-    :Then(function()
+    :Then(function() -- ~00:03
+      local searchTerm = { "b", "l", "e", "s", "s", "e", "d" }
+      addTraceMarker(task.name .. ",search")
+      emulateUserInput(FurC_SearchBox, searchTerm, delayTyping)
+      suspendTask(task, delaySearch + (#searchTerm * delayTyping)) -- wait for the searches to catch up
+    end)
+    :Then(function() -- ~00:09.5
+      addTraceMarker(task.name .. ",clear")
       FurC_SearchBox:Clear()
-      delayTask(task, 5000) -- Wait again for the search to finish
+      suspendTask(task, delaySearch) -- wait for the cleared search to catch up
     end)
-    :Then(function()
+    :Then(function() -- ~00:14.5
+      addTraceMarker(task.name .. ",unfocus")
       FurC_SearchBox:LoseFocus()
-      delayTask(task, 1000)
+      suspendTask(task, delayUI) -- wait for any UI actions related to focus loss
     end)
-    :Then(function()
+    :Then(function() -- ~00:15.5
       FurnitureCatalogue_Toggle()
       stopProfiler()
     end)
@@ -180,92 +199,196 @@ end
 -- Scenario 3: Search all Items (includes crown+rumour)
 -- Check if the filters make a difference in search performance.
 local function scenario3_search_all_items()
-  FurnitureCatalogue_Toggle()
-  disableDebug()
-  clearAll()
-  setShowCrowns(true)
-  setShowRumour(true)
-
-  zo_callLater(function()
-    startProfiler()
-    local searchBox = FurC_SearchBox
-    emulateTyping(searchBox, { "b", "l", "e", "s", "s", "e", "d" }, 85)
-    -- Wait for the search to catch up, before clearing it
-    zo_callLater(function()
-      searchBox:Clear()
-      -- Wait again for the search to finish
-      zo_callLater(function()
-        -- emulate user unfocussing search
-        searchBox:LoseFocus()
-        zo_callLater(function()
-          FurnitureCatalogue_Toggle()
-          stopProfiler()
-        end, 1000)
-      end, 5000)
-    end, 5000)
-  end, 10000) -- wait before profiling
+  local task = LibAsync:Create("scenario3_search_all_items")
+  assert(task)
+  task
+    :Call(function()
+      FurnitureCatalogue_Toggle()
+      suspendTask(task, delayUI) -- wait for the UI to catch up
+    end)
+    :Then(function()
+      disableDebug()
+      clearAll()
+      suspendTask(task, 3 * delayUI) -- wait for the UI to catch up
+    end)
+    :Then(function()
+      setHideCrowns(false)
+      setHideRumour(false)
+      suspendTask(task, delayProfiler) -- wait before starting the profiler
+    end)
+    :Then(function() -- ~00:00
+      startProfiler()
+      addTraceMarker(task.name .. ",warmup")
+      suspendTask(task, 3 * delayUI) -- let the profiler warm up
+    end)
+    :Then(function() -- ~00:03
+      local searchTerm = { "b", "l", "e", "s", "s", "e", "d" }
+      addTraceMarker(task.name .. ",search")
+      emulateUserInput(FurC_SearchBox, searchTerm, delayTyping)
+      suspendTask(task, delaySearch + (#searchTerm * delayTyping))
+    end)
+    :Then(function() -- ~00:09.5
+      addTraceMarker(task.name .. ",clear")
+      FurC_SearchBox:Clear()
+      suspendTask(task, delaySearch) -- Wait again for the search to finish
+    end)
+    :Then(function() -- ~00:14.5
+      addTraceMarker(task.name .. ",unfocus")
+      FurC_SearchBox:LoseFocus()
+      suspendTask(task, delayUI) -- wait for any UI actions related to focus loss
+    end)
+    :Then(function() -- ~00:15.5
+      FurnitureCatalogue_Toggle()
+      stopProfiler()
+    end)
 end
 
 -- Scenario 4: Filter Base Items
 -- Check filter performance.
 local function scenario4_filter_base_items()
-  FurnitureCatalogue_Toggle()
-  disableDebug()
-  clearAll()
-  rescanDB()
-  rescanData()
-  rescanChar()
-
-  zo_callLater(function()
-    startProfiler()
-    local searchBox = FurC_SearchBox
-    emulateTyping(searchBox, { "b", "l", "e", "s", "s", "e", "d" }, 85)
-    -- Wait for the search to catch up, before clearing it
-    zo_callLater(function()
-      searchBox:Clear()
-      -- Wait again for the search to finish
-      zo_callLater(function()
-        -- emulate user unfocussing search
-        searchBox:LoseFocus()
-        zo_callLater(function()
-          FurnitureCatalogue_Toggle()
-          stopProfiler()
-        end, 1000)
-      end, 5000)
-    end, 5000)
-  end, 10000) -- wait before profiling
-
-  startProfiler()
-  FurnitureCatalogue_Toggle()
-  -- TODO: Implement the filter operations
-  FurnitureCatalogue_Toggle()
-  stopProfiler()
+  local task = LibAsync:Create("scenario4_filter_base_items")
+  assert(task)
+  task
+    :Call(function()
+      FurnitureCatalogue_Toggle()
+      suspendTask(task, delayUI) -- wait for the UI to catch up
+    end)
+    :Then(function()
+      clearAll()
+      suspendTask(task, delayProfiler) -- wait before starting the profiler
+    end)
+    :Then(function() -- ~00:00
+      disableDebug()
+      startProfiler()
+      addTraceMarker(task.name .. ",warmup")
+      suspendTask(task, 3 * delayUI) -- let the profiler warm up
+    end)
+    :Then(function() -- ~00:03
+      addTraceMarker(task.name .. ",filter1")
+      setDropdownChoice("Source", FurC.Constants.ItemSources.VENDOR)
+      suspendTask(task, 3 * delayUI) -- wait for the 1. filter to take effect
+    end)
+    :Then(function() -- ~00:06
+      addTraceMarker(task.name .. ",filter2")
+      setDropdownChoice("Version", FurC.Constants.Versioning.KITTY)
+      suspendTask(task, 3 * delayUI) -- wait for the 2. filter to take effect
+    end)
+    :Then(function() -- ~00:09
+      addTraceMarker(task.name .. ",filter2Change")
+      setDropdownChoice("Source", FurC.Constants.Versioning.CRAFTING_KNOWN)
+      suspendTask(task, 3 * delayUI) -- wait for the changed 2. filter to take effect
+    end)
+    :Then(function() -- ~00:12
+      addTraceMarker(task.name .. ",unfocus")
+      FurC_SearchBox:LoseFocus()
+      suspendTask(task, delayUI) -- wait for any UI actions related to focus loss
+    end)
+    :Then(function() -- ~00:15.5
+      FurnitureCatalogue_Toggle()
+      stopProfiler()
+    end)
 end
 
+-- Scenario 5: Filter all Items (includes crown+rumour)
+-- Check if the filters make a difference in filter performance.
 local function scenario5_filter_all_items()
-  disableDebug()
-  clearAll()
-  setShowCrowns(true)
-  setShowRumour(true)
-  rescanDB()
-  rescanData()
-  rescanChar()
-
-  startProfiler()
-  FurnitureCatalogue_Toggle()
-  -- TODO: Implement the filter operations
-  FurnitureCatalogue_Toggle()
-  stopProfiler()
+  local task = LibAsync:Create("scenario5_filter_all_items")
+  assert(task)
+  task
+    :Call(function()
+      FurnitureCatalogue_Toggle()
+      suspendTask(task, delayUI) -- wait for the UI to catch up
+    end)
+    :Then(function()
+      clearAll()
+      suspendTask(task, 3 * delayUI) -- wait for the UI to catch up
+    end)
+    :Then(function()
+      setHideCrowns(false)
+      setHideRumour(false)
+      suspendTask(task, delayProfiler) -- wait before starting the profiler
+    end)
+    :Then(function() -- ~00:00
+      disableDebug()
+      startProfiler()
+      addTraceMarker(task.name .. ",warmup")
+      suspendTask(task, 3 * delayUI) -- let the profiler warm up
+    end)
+    :Then(function() -- ~00:03
+      addTraceMarker(task.name .. ",filter1")
+      setDropdownChoice("Source", FurC.Constants.ItemSources.VENDOR)
+      suspendTask(task, 3 * delayUI) -- wait for the 1. filter to take effect
+    end)
+    :Then(function() -- ~00:06
+      addTraceMarker(task.name .. ",filter2")
+      setDropdownChoice("Version", FurC.Constants.Versioning.KITTY)
+      suspendTask(task, 3 * delayUI) -- wait for the 2. filter to take effect
+    end)
+    :Then(function() -- ~00:09
+      addTraceMarker(task.name .. ",filter2Change")
+      setDropdownChoice("Source", FurC.Constants.Versioning.CRAFTING_KNOWN)
+      suspendTask(task, 3 * delayUI) -- wait for the changed 2. filter to take effect
+    end)
+    :Then(function() -- ~00:12
+      addTraceMarker(task.name .. ",unfocus")
+      FurC_SearchBox:LoseFocus()
+      suspendTask(task, delayUI) -- wait for any UI actions related to focus loss
+    end)
+    :Then(function() -- ~00:15.5
+      FurnitureCatalogue_Toggle()
+      stopProfiler()
+    end)
 end
 
+-- Scenario 6: Caching Efficiency Test
+-- Test the performance of switching between filters to check for caching improvements
 local function scenario6_caching_test()
-  disableDebug()
-  clearAll()
-  startProfiler()
-  FurnitureCatalogue_Toggle()
-  -- TODO: Implement the search, clear, search operations to test caching
-  FurnitureCatalogue_Toggle()
-  stopProfiler()
+  local task = LibAsync:Create("scenario6_caching_test")
+  assert(task)
+  task
+    :Call(function()
+      FurnitureCatalogue_Toggle()
+      suspendTask(task, delayUI) -- wait for the UI to catch up
+    end)
+    :Then(function()
+      clearAll()
+      suspendTask(task, delayProfiler) -- wait before starting the profiler
+    end)
+    :Then(function() -- ~00:00
+      disableDebug()
+      startProfiler()
+      addTraceMarker(task.name .. ",warmup")
+      suspendTask(task, 3 * delayUI) -- let the profiler warm up
+    end)
+    :Then(function() -- ~00:03
+      addTraceMarker(task.name .. ",filter")
+      setDropdownChoice("Version", FurC.Constants.Versioning.KITTY)
+      suspendTask(task, 3 * delayUI) -- wait for the 1. filter to take effect
+    end)
+    :Then(function() -- ~00:06
+      addTraceMarker(task.name .. ",filterChange1")
+      setDropdownChoice("Version", FurC.Constants.Versioning.NECROM)
+      suspendTask(task, 3 * delayUI) -- wait for the changed filter to take effect
+    end)
+    :Then(function() -- ~00:09
+      addTraceMarker(task.name .. ",filterChange2")
+      setDropdownChoice("Version", FurC.Constants.Versioning.KITTY)
+      suspendTask(task, 3 * delayUI) -- wait for the changed filter to take effect
+    end)
+    :Then(function() -- ~00:12
+      addTraceMarker(task.name .. ",clear")
+      setDropdownChoice("Version", FurC.Constants.Versioning.NONE)
+      suspendTask(task, 3 * delayUI) -- wait for the cleared filter to take effect
+    end)
+    :Then(function() -- ~00:15
+      addTraceMarker(task.name .. ",unfocus")
+      FurC_SearchBox:LoseFocus()
+      suspendTask(task, delayUI) -- wait for any UI actions related to focus loss
+    end)
+    :Then(function() -- ~00:16
+      FurnitureCatalogue_Toggle()
+      stopProfiler()
+    end)
 end
 
 -- Structuring the Tests
@@ -278,15 +401,3 @@ this.Profiler = {
   s5 = scenario5_filter_all_items,
   s6 = scenario6_caching_test,
 }
-
--- How to run scenarios:
--- 1. perform UI reload
--- 2. place your char in a spot with good FPS
--- 3. open profiler UI to see progress
--- 4. call test from chat window like /script FurCDev.Profiler.s1()
--- 5. it opens FurC GUI, resets any filters and waits for 10 sec
--- 6. after that the profiling starts
--- 7. wait for EsoProfiler to generate the report
--- 8. export tracelog
--- 9. check file in Perfetto Trace Log Viewer
--- 10. or save log for later, like `cp '<SAVED_VARS>/ESOProfiler.lua' '<TARGET_DIR>/2023-01-25_furc_s1.lua'

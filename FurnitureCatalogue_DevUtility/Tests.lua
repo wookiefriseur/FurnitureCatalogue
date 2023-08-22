@@ -391,13 +391,128 @@ local function scenario6_caching_test()
     end)
 end
 
--- Structuring the Tests
+-- Benchmarks
+
+local function benchmarkReport(metrics)
+  return string.format(
+    "Min Time: %s\nMax Time: %s\nAverage Time: %s\nQueries per Second:",
+    metrics.timeMin,
+    metrics.timeMax,
+    metrics.timeAvg,
+    metrics.queriesPerSecond
+  )
+end
+
+---Benchmark a given function
+---@param calledFn function benchmarked function
+---@param iterations number how often to repeat the function call
+---@param batchSize number yields after each batch
+---@return thread  process returning {timeMin,timeMax,timeAvg,timeMedian,queriesPerSecond,queryTimes}
+local function benchmarkFunctions(calledFn, iterations, batchSize)
+  local co = coroutine.create(function()
+    local queryTimes = {}
+    local timeMin = math.huge
+    local timeMax = 0
+    local totalTime = 0
+    local batches = math.ceil(iterations / batchSize)
+    for b = 1, batches do
+      local batchStartTime = GetGameTimeMilliseconds()
+      for i = 1, batchSize do
+        calledFn()
+      end
+      local batchEndTime = GetGameTimeMilliseconds()
+      local batchTime = batchEndTime - batchStartTime
+      local avgQueryTime = batchTime / batchSize
+      totalTime = totalTime + batchTime
+      timeMin = math.min(timeMin, avgQueryTime)
+      timeMax = math.max(timeMax, avgQueryTime)
+      for i = 1, batchSize do
+        table.insert(queryTimes, avgQueryTime)
+      end
+      d(string.format("Current progress: %.2f%%", b / (iterations / batchSize) * 100))
+      coroutine.yield()
+    end
+
+    -- Calculate stats
+    local timeAvg = totalTime / iterations
+    table.sort(queryTimes)
+    local queriesPerSecond = iterations / (totalTime / 1000)
+    local timeMedian
+    if iterations % 2 == 1 then
+      timeMedian = queryTimes[math.ceil(iterations / 2)]
+    else
+      timeMedian = (queryTimes[iterations / 2] + queryTimes[iterations / 2 + 1]) / 2
+    end
+
+    return {
+      timeMin = timeMin,
+      timeMax = timeMax,
+      timeAvg = timeAvg,
+      timeMedian = timeMedian,
+      queriesPerSecond = queriesPerSecond,
+      batchSize = batchSize,
+      iterations = iterations,
+      queryTimes = queryTimes,
+    }
+  end)
+
+  return co
+end
+
+local function mockRescan()
+  local sum = 0
+  for i = 1, 10000 do
+    sum = sum + i
+  end
+end
+
+local function benchmark1_init_db()
+  mockRescan()
+end
+
+function YIELD_TEST(iterations, batchSize)
+  local co = benchmarkFunctions(benchmark1_init_db, iterations, batchSize)
+  local success, result
+  repeat
+    d("Resuming") -- removing this crashes the game ¯\_(ツ)_/¯
+    success, result = coroutine.resume(co)
+    if not success then
+      error("Oh no, anyways: " .. tostring(result))
+      return
+    end
+  until coroutine.status(co) ~= "suspended"
+
+  d(benchmarkReport(result))
+end
+-- /script YIELD_TEST(10000,250)
 
 this.Profiler = {
+  -- Scenarios
   s1 = scenario1_init_db,
   s2 = scenario2_baseline_search,
   s3 = scenario3_search_all_items,
   s4 = scenario4_filter_base_items,
   s5 = scenario5_filter_all_items,
   s6 = scenario6_caching_test,
+
+  -- ToDo: Benchmarks
+
+  b1 = function() end,
+  b2 = benchmark2_ui_search,
+  b3 = benchmark3_ui_filter,
+  b4 = benchmark4_query,
+  b5 = benchmark5_get_material,
+
+  -- Utility
+  info = function()
+    local memCurrent = collectgarbage("count")
+    return string.format(
+      "Startup: %03d ms, Memory: ~%0.f KB / %0.f KB\nCurrent total: %0.f KB (change: %0.f KB)",
+      FurC.Metrics.startup,
+      FurC.Metrics.memUsage,
+      FurC.Metrics.memTotal,
+      memCurrent,
+      memCurrent - FurC.Metrics.memTotal
+    )
+  end,
 }

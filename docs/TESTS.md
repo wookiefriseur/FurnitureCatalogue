@@ -35,6 +35,29 @@ Disable FurC debug output
 
 If you're running automated UI scenarios don't touch keys until it's done.
 
+# HowTo
+
+How to run scenarios:
+
+1. perform UI reload
+2. wait for 30-60 seconds in case some AddOns have delayed loading
+3. open profiler UI to see progress when it finishes
+4. call test from chat window like /script FurCDev.Profiler.s1()
+5. it opens FurC GUI, resets any filters and waits for 10 sec (hands off mouse and keyboard, also Game must have focus)
+6. after that preparation the profiling begins
+7. wait for EsoProfiler to generate the report
+8. export tracelog for Perfetto or use the ESOProfiler report viewer ingame
+9. or save log for later, like `cp '<SAVED_VARS>/ESOProfiler.lua' '<TARGET_DIR>/2023-01-23_furc_s1.lua'
+
+## Cautions
+-- To rule out most side effects and difficulties in the profiling results:
+--    try to limit profiling scenarios to 20 seconds
+--    place your char in a spot with stable FPS in a regular zone
+--    avoid houses or dungeon instances, which might have unknown side effects
+--    make sure you're running only essential AddOns
+--    make sure you are not already logging with another tool
+--    record multiple sessions, if the numbers look off
+
 # Scenarios
 
 ## Scenario 1: Re-Initialise database
@@ -80,8 +103,7 @@ Prerequisites: ❌clearAll,DB3️⃣,DB2️⃣,DB1️⃣
 
 1. 🔎 filter "Source: Purchasable Gold"
 2. 🔎 filter "Version: Elsweyr"
-3. 🔎 clear filter "Version"
-4. 🔎 filter "Source: Craftable: Known"
+4. 🔎 change filter "Source: Craftable: Known"
 
 ## Scenario 5: Filter all Items (includes 👑📰)
 
@@ -96,7 +118,7 @@ Prerequisites: ❌clearAll,DB3️⃣,DB2️⃣,DB1️⃣
 
 ## Scenario 6: Caching Efficiency Test
 
-Test the performance of searching for the same item multiple times to check for caching improvements (See [Baseline Search Scenario](#scenario-2-baseline-search)).
+Test the performance of switching between filters to check for caching improvements (See [Filter Base Items](#scenario-4-filter-base-items)).
 
 Prerequisites: ❌clearAll
 

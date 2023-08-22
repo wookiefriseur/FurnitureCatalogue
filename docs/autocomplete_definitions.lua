@@ -929,6 +929,10 @@ ESO_PROFILER = {}
 function StartScriptProfiler() end
 function StopScriptProfiler() end
 
+---Add @userEvent to profiler log
+---@param message string
+function RecordScriptProfilerUserEvent(message) end
+
 -- UI Element overrides
 
 ---@class EditControl:Control

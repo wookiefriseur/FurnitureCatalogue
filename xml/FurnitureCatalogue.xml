@@ -37,7 +37,7 @@
                     pressed="esoui/art/mail/mail_tabicon_compose_down.dds"
                     mouseOver="esoui/art/mail/mail_tabicon_compose_over.dds" />
                 </Button>
-                <Control name="FurC_Label" resizeToFitDescendents="true">
+                <Control name="FurC_Label" resizeToFitConstrains="X">
                   <Anchor point="TOP" relativeTo="$(parent)" relativePoint="TOP" offsetX="0"
                     offsetY="10" />
                   <Dimensions y="54" />

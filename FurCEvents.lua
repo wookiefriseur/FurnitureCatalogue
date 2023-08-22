@@ -25,6 +25,7 @@ end
 
 local function getItemKnowledge(itemLink)
   local recipeArray = FurC.Find(itemLink)
+  local itemId = recipeArray["itemId"]
   if FurC.GetUseInventoryIconsOnChar() then
     return FurC.CanCraft(itemId, recipeArray)
   end

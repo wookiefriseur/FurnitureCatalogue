@@ -2,7 +2,6 @@ local currentChar = FurC.CharacterName
 local task = LibAsync:Create("FurnitureCatalogue_ScanDataFiles")
 
 local lastLink = nil
-local recipeArray = nil
 
 local ver = FurC.Constants.Versioning
 local src = FurC.Constants.ItemSources
@@ -70,9 +69,9 @@ function FurC.GetIngredients(itemLink, recipeArray)
       ingredients[ingredientLink] = qty
     end
   else
-    local _, name, numIngredients = GetRecipeInfo(recipeArray.recipeListIndex, recipeArray.recipeIndex)
+    local _, _, numIngredients = GetRecipeInfo(recipeArray.recipeListIndex, recipeArray.recipeIndex)
     for ingredientIndex = 1, numIngredients do
-      local name, _, qty =
+      local _, _, qty =
         GetRecipeIngredientItemInfo(recipeArray.recipeListIndex, recipeArray.recipeIndex, ingredientIndex)
       local ingredientLink = GetRecipeIngredientItemLink(
         recipeArray.recipeListIndex,
@@ -140,6 +139,9 @@ end
 ---@param itemOrBlueprintLink any
 ---@return table
 function FurC.Find(itemOrBlueprintLink)
+  --/script d(FurC.Find("|H1:item:194392:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h"))
+  --/script d(FurC.Find("|H1:item:193807:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h"))
+  local recipeArray
   if tonumber(itemOrBlueprintLink) == itemOrBlueprintLink then
     itemOrBlueprintLink = getItemLink(itemOrBlueprintLink)
   end
@@ -151,7 +153,6 @@ function FurC.Find(itemOrBlueprintLink)
   if itemOrBlueprintLink == lastLink and nil ~= recipeArray then
     return recipeArray
   else
-    recipeArray = nil
     lastLink = itemOrBlueprintLink
   end
 
@@ -160,7 +161,7 @@ function FurC.Find(itemOrBlueprintLink)
   elseif IsItemLinkPlaceableFurniture(itemOrBlueprintLink) then
     recipeArray = parseFurnitureItem(itemOrBlueprintLink)
   else
-    itemId = getItemId(itemOrBlueprintLink)
+    local itemId = getItemId(itemOrBlueprintLink)
     if itemId ~= nil and tonumber(itemId) > 0 and FurC.settings.data ~= nil then
       recipeArray = FurC.settings.data[itemId]
     end
@@ -179,21 +180,6 @@ function FurC.Delete(itemOrBlueprintLink) -- sets recipeArray, returns it - call
   end
 end
 
-function FurC.GetEntry(itemOrBlueprintLink)
-  local itemLink = (IsItemLinkFurnitureRecipe(itemOrBlueprintLink) and GetRecipeResultItemLink(itemOrBlueprintLink))
-    or itemOrBlueprintLink
-  local recipeArray = FurC.Find(itemLink)
-  FurC.Logger:Debug("Trying to get entry for %s: %s", itemLink, recipeArray)
-  if not recipeArray then
-    return
-  end
-  local itemId = getItemId(itemOrBlueprintLink)
-  if recipeArray.blueprint then
-    itemId = getItemId(GetItemLinkRecipeResultItemLink(blueprintLink))
-  end
-  return itemId, recipeArray
-end
-
 function FurC.IsFavorite(itemLink, recipeArray)
   recipeArray = recipeArray or FurC.Find(itemLink)
   return recipeArray.favorite
@@ -210,7 +196,8 @@ function FurC.Fave(itemLink, recipeArray)
   FurC.UpdateGui()
 end
 
-local function scanRecipeIndices(recipeListIndex, recipeIndex) -- returns recipeArray or nil, initialises
+--- @return table|nil
+local function scanRecipeIndices(recipeListIndex, recipeIndex)
   local itemLink = GetRecipeResultItemLink(recipeListIndex, recipeIndex, LINK_STYLE_BRACKETS)
   if nil == itemLink or #itemLink == 0 or not IsItemLinkPlaceableFurniture(itemLink) then
     return
@@ -283,27 +270,6 @@ local function scanCharacter()
   FurC.Logger:Debug(GetString(SI_FURC_DEBUG_CHARSCANCOMPLETE))
 end
 FurC.ScanCharacter = scanCharacter
-
-function FurC.RescanRumourRecipes()
-  local function rescan()
-    for itemId, recipeArray in pairs(FurC.settings.data) do
-      if recipeArray.source == src.RUMOUR then
-        local itemLink = recipeArray[itemLink]
-        if not FurC.RumourRecipes[itemLink] then
-          recipeArray.source = src.CRAFTING
-          recipeArray.origin = nil
-        end
-      end
-    end
-  end
-
-  if nil ~= task then
-    task:Call(rescan):Then(FurC.UpdateGui)
-  else
-    rescan()
-    FurC.UpdateGui()
-  end
-end
 
 local recipeArray
 local function scanFromFiles(shouldScanCharacter)

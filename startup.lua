@@ -1,6 +1,8 @@
 FurC = FurC or {}
 
 local this = FurC
+local utils = FurC.Utils
+
 this.name = "FurnitureCatalogue"
 this.author = "manavortex"
 this.tag = "FurC"

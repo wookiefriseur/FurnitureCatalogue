@@ -69,8 +69,8 @@ function this.SortTable(tTable, sortKey, SortOrderUp)
   local ret = {}
   local scannedLinks = {}
   for _, k in ipairs(keys) do
-    local entry = tTable[k]
-    local itemLink = entry["itemLink"]
+    entry = tTable[k]
+    itemLink = entry["itemLink"]
     local ingredients = entry["ingredients"]
     local index = scannedLinks[itemLink] or k
 

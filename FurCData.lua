@@ -6,9 +6,42 @@ local lastLink = nil
 local ver = FurC.Constants.Versioning
 local src = FurC.Constants.ItemSources
 
-local getItemId = FurC.Utils.GetItemId
-local getItemLink = FurC.Utils.GetItemLink
-local getCurrentChar = FurC.Utils.GetCurrentChar
+local utils = FurC.Utils
+
+local function getCurrentChar()
+  currentChar = currentChar or zo_strformat(GetUnitName("player"))
+  return currentChar
+end
+
+-- GetItemLinkItemId doesn't work the way I need it
+-- ToDo: fix this, should only take one type of link (not nil, number, string, links)
+local function getItemId(itemLink)
+  if nil == itemLink or "" == itemLink then
+    return
+  end
+  if type(itemLink) == "number" and itemLink > 9999 then
+    return itemLink
+  end
+  local _, _, _, itemId = ZO_LinkHandler_ParseLink(itemLink)
+  return tonumber(itemId)
+end
+FurC.GetItemId = getItemId
+
+--- Get item link from id
+--- @param itemId any
+--- @return string link or empty string
+-- ToDo: fix this, should only take one type of input
+local function getItemLink(itemId)
+  if nil == itemId or #tostring(itemId) < 4 then
+    return ""
+  end
+  itemId = tostring(itemId)
+  if #itemId > 55 then
+    return itemId
+  end
+  return zo_strformat("|H1:item:<<1>>:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h", itemId)
+end
+FurC.GetItemLink = getItemLink
 
 local function printItemLink(itemId)
   if nil == itemId then

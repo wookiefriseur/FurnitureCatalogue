@@ -1,18 +1,16 @@
-local this = FurC
-
-this.SlotTemplate = "FurC_SlotTemplate"
-this.KnowledgeFilter = "All (Accountwide)"
-this.SearchString = ""
-this.ScrollSortUp = true
+FurC.SlotTemplate = "FurC_SlotTemplate"
+FurC.KnowledgeFilter = "All (Accountwide)"
+FurC.SearchString = ""
+FurC.ScrollSortUp = true
 local task = LibAsync:Create("FurnitureCatalogue_updateLineVisibility")
 local otherTask = LibAsync:Create("FurnitureCatalogue_ToggleGui")
 
 local sortTable = FurC.Utils.SortTable
 local src = FurC.Constants.ItemSources
-local ver = this.Constants.Versioning
+local ver = FurC.Constants.Versioning
 
 local function sort(myTable)
-  local sortName, sortDirection = this.GetSortParams()
+  local sortName, sortDirection = FurC.GetSortParams()
   sortName = sortName or "itemName"
   local sortUp = ((ZO_SORT_ORDER_UP and sortDirection == "up") or ZO_SORT_ORDER_DOWN)
   return sortTable(myTable, sortName, sortUp)
@@ -41,7 +39,7 @@ local function getSourceIndicesKeys()
 
   return sourceIndicesKeys
 end
-this.GetSourceIndicesKeys = getSourceIndicesKeys
+FurC.GetSourceIndicesKeys = getSourceIndicesKeys
 
 local choicesSource = {}
 local function getChoicesSource()
@@ -66,7 +64,7 @@ local function getChoicesSource()
 
   return choicesSource
 end
-this.GetChoicesSource = getChoicesSource
+FurC.GetChoicesSource = getChoicesSource
 
 local tooltipsSource = {}
 local function getTooltipsSource()
@@ -91,10 +89,10 @@ local function getTooltipsSource()
 
   return tooltipsSource
 end
-this.GetTooltipsSource = getTooltipsSource
+FurC.GetTooltipsSource = getTooltipsSource
 
 -- [UPGRADING GAME VERSIONS, PTS compatibility]
-this.DropdownData = {
+FurC.DropdownData = {
   ChoicesVersion = {
     [ver.NONE] = GetString(SI_FURC_FILTER_VERSION_OFF),
     [ver.HOMESTEAD] = GetString(SI_FURC_FILTER_VERSION_HS),
@@ -179,14 +177,14 @@ this.DropdownData = {
   TooltipsSource = {},
 }
 
-function this.UpdateDropdowns()
-  this.DropdownData.ChoicesSource = this.GetChoicesSource()
-  this.DropdownData.TooltipsSource = this.GetTooltipsSource()
+function FurC.UpdateDropdowns()
+  FurC.DropdownData.ChoicesSource = getChoicesSource()
+  FurC.DropdownData.TooltipsSource = getTooltipsSource()
 end
 
 local function setupSourceDropdown()
-  this.UpdateDropdowns()
-  this.SourceIndices = getSourceIndicesKeys()
+  FurC.UpdateDropdowns()
+  FurC.SourceIndices = getSourceIndicesKeys()
 end
 
 function FurC.CalculateMaxLines()

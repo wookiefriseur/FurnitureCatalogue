@@ -15,8 +15,8 @@ xml\FurnitureCatalogue.xml
 
 FurCConstants.lua
 
+Utils.lua
 startup.lua
-FurCUtil.lua
 
 FurCSettingsAdapter.lua
 FurCMenu.lua

@@ -438,7 +438,7 @@ function FurC.SetDropdownChoice(dropdownName, textValue, dropdownIndex)
   FurC.Logger:Verbose("SetDropdownChoice(%s, %s (Index: %s))", dropdownName, textValue, dropdownIndex)
 
   FurC.DropdownChoices[dropdownName] = dropdownIndex
-  
+
   -- if we're setting the dropdown menu "source" to "purchaseable", set "character" to "All"
   if dropdownName == "Source" then
     if dropdownIndex > src.CRAFTING_UNKNOWN or dropdownIndex < src.CRAFTING then
@@ -602,11 +602,4 @@ function FurC.DeleteCharacter(characterName)
       return
     end
   end
-end
-
-function FurC.GetCurrentCharacterName()
-  if nil == FurC.CharacterName then
-    FurC.CharacterName = zo_strformat(GetUnitName("player"))
-  end
-  return FurC.CharacterName
 end

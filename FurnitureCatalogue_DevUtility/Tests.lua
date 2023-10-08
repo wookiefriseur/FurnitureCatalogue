@@ -115,8 +115,8 @@ local delaySearch = 5000
 -- Scenario 1: Re-Initialise database
 -- Profiling on UI reload crashes on my setup,
 --  but we can emulate a Furniture Catalogue boot phase by manually regenerating data.
-local function scenario1_init_db()
-  local task = LibAsync:Create("scenario1_init_db")
+local function scenario_init_db()
+  local task = LibAsync:Create("scenario_init_db")
   assert(task)
   task
     :Call(function()
@@ -156,8 +156,8 @@ end
 
 -- Scenario 2: Baseline Search
 -- Search with all filters disabled and no crown+rumour (the default setting), for a baseline.
-local function scenario2_baseline_search()
-  local task = LibAsync:Create("scenario2_baseline_search")
+local function scenario_baseline_search()
+  local task = LibAsync:Create("scenario_baseline_search")
   assert(task)
   task
     :Call(function()
@@ -198,8 +198,8 @@ end
 
 -- Scenario 3: Search all Items (includes crown+rumour)
 -- Check if the filters make a difference in search performance.
-local function scenario3_search_all_items()
-  local task = LibAsync:Create("scenario3_search_all_items")
+local function scenario_search_all_items()
+  local task = LibAsync:Create("scenario_search_all_items")
   assert(task)
   task
     :Call(function()
@@ -245,8 +245,8 @@ end
 
 -- Scenario 4: Filter Base Items
 -- Check filter performance.
-local function scenario4_filter_base_items()
-  local task = LibAsync:Create("scenario4_filter_base_items")
+local function scenario_filter_base_items()
+  local task = LibAsync:Create("scenario_filter_base_items")
   assert(task)
   task
     :Call(function()
@@ -291,8 +291,8 @@ end
 
 -- Scenario 5: Filter all Items (includes crown+rumour)
 -- Check if the filters make a difference in filter performance.
-local function scenario5_filter_all_items()
-  local task = LibAsync:Create("scenario5_filter_all_items")
+local function scenario_filter_all_items()
+  local task = LibAsync:Create("scenario_filter_all_items")
   assert(task)
   task
     :Call(function()
@@ -342,8 +342,8 @@ end
 
 -- Scenario 6: Caching Efficiency Test
 -- Test the performance of switching between filters to check for caching improvements
-local function scenario6_caching_test()
-  local task = LibAsync:Create("scenario6_caching_test")
+local function scenario_caching_test()
+  local task = LibAsync:Create("scenario_caching_test")
   assert(task)
   task
     :Call(function()
@@ -404,6 +404,7 @@ local function benchmarkReport(metrics)
 end
 
 ---Benchmark a given function
+---  (Do not use in combination with the tracer as it seems to be incompatible with coroutines)
 ---@param calledFn function benchmarked function
 ---@param iterations number how often to repeat the function call
 ---@param batchSize number yields after each batch
@@ -459,49 +460,107 @@ local function benchmarkFunctions(calledFn, iterations, batchSize)
   return co
 end
 
-local function mockRescan()
-  local sum = 0
-  for i = 1, 10000 do
-    sum = sum + i
+local function benchmark_init_db()
+  local function mockRescan()
+    local sum = 0
+    for i = 1, 10000 do
+      sum = sum + i
+    end
+  end
+  benchmarkFunctions(mockRescan, 10, 1)
+end
+local function benchmark_ui_search() end
+local function benchmark_ui_filter() end
+local function benchmark_query() end
+local function benchmark_get_material() end
+
+-- TESTS
+
+local function testsuite_utils_table()
+  local function test_MergeTable()
+    local mergeTable = FurC.Utils.MergeTable
+    -- Test case 1: Merging two tables with some overlapping keys
+    local t1 = { a = "1", b = "3" }
+    local t2 = { b = "2" }
+    local result = mergeTable(t1, t2)
+    assert(result.a == "1", "Test case 1: Key 'a' should have value '1'")
+    assert(result.b == "2", "Test case 1: Key 'b' should have value '2'")
+
+    -- Test case 2: Merging with an empty table
+    local t3 = { a = "1", b = "3" }
+    local t4 = {}
+    local result2 = mergeTable(t3, t4)
+    assert(result2.a == "1", "Test case 2: Key 'a' should have value '1'")
+    assert(result2.b == "3", "Test case 2: Key 'b' should have value '3'")
+
+    -- Test case 3: Merging two empty tables
+    local t5 = {}
+    local t6 = {}
+    local result3 = mergeTable(t5, t6)
+    assert(next(result3) == nil, "Test case 3: Result should be an empty table")
+  end
+
+  test_MergeTable()
+end
+
+local function testsuite_utils_string() end
+
+local function testsuite_utils_furniture()
+  local furniture = {
+    { id = 126559, link = "|H0:item:126559:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h" },
+    { id = 147647, link = "|H0:item:147647:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h" },
+    { id = 118206, link = "|H0:item:118206:5:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h" },
+  }
+  local recipes = {
+    { id = 166834, itemid = 165687, link = "|H1:item:166834:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h" },
+  }
+
+  local function test_isFurniture()
+    local isFurniture = FurC.Utils.IsFurniture
+
+    for _, item in pairs(furniture) do
+      assert(isFurniture(item.link), item.id .. " is furniture")
+    end
+  end
+
+  test_isFurniture()
+end
+
+local function run_test_suites()
+  local tests = {
+    testsuite_utils_table,
+    testsuite_utils_string,
+    testsuite_utils_furniture,
+  }
+
+  for i = 1, #tests do
+    local success, message = pcall(tests[i])
+    if success then
+      FurC.Logger:Info("Testsuite #" .. i .. " passed")
+    else
+      FurC.Logger:Info("Testsuite #" .. i .. " failed: " .. message)
+    end
   end
 end
 
-local function benchmark1_init_db()
-  mockRescan()
-end
-
-function YIELD_TEST(iterations, batchSize)
-  local co = benchmarkFunctions(benchmark1_init_db, iterations, batchSize)
-  local success, result
-  repeat
-    d("Resuming") -- removing this crashes the game ¯\_(ツ)_/¯
-    success, result = coroutine.resume(co)
-    if not success then
-      error("Oh no, anyways: " .. tostring(result))
-      return
-    end
-  until coroutine.status(co) ~= "suspended"
-
-  d(benchmarkReport(result))
-end
--- /script YIELD_TEST(10000,250)
-
 this.Profiler = {
-  -- Scenarios
-  s1 = scenario1_init_db,
-  s2 = scenario2_baseline_search,
-  s3 = scenario3_search_all_items,
-  s4 = scenario4_filter_base_items,
-  s5 = scenario5_filter_all_items,
-  s6 = scenario6_caching_test,
+  -- Scenarios (uses profiler)
+  s1 = scenario_init_db,
+  s2 = scenario_baseline_search,
+  s3 = scenario_search_all_items,
+  s4 = scenario_filter_base_items,
+  s5 = scenario_filter_all_items,
+  s6 = scenario_caching_test,
 
-  -- ToDo: Benchmarks
+  -- ToDo: Benchmarks (do not use with profiler)
+  b1 = benchmark_init_db,
+  b2 = benchmark_ui_search,
+  b3 = benchmark_ui_filter,
+  b4 = benchmark_query,
+  b5 = benchmark_get_material,
 
-  b1 = function() end,
-  b2 = benchmark2_ui_search,
-  b3 = benchmark3_ui_filter,
-  b4 = benchmark4_query,
-  b5 = benchmark5_get_material,
+  -- ToDo: Tests
+  tests = run_test_suites,
 
   -- Utility
   info = function()

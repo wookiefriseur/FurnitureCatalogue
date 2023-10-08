@@ -1,6 +1,49 @@
-# Scenarios for Profiling
+# HowTo
 
-Tests in [FurCDev-Tests](../FurnitureCatalogue_DevUtility/Tests.lua)
+How to run scenarios:
+
+1. perform UI reload
+2. wait for 30-60 seconds in case some AddOns have delayed loading
+3. open profiler UI to see progress when it finishes
+4. call test from chat window like /script FurCDev.Profiler.s1()
+5. it opens FurC GUI, resets any filters and waits for 10 sec (hands off mouse and keyboard, also Game must have focus)
+6. after that preparation the profiling begins
+7. wait for EsoProfiler to generate the report
+8. export tracelog for Perfetto or use the ESOProfiler report viewer ingame
+9. or save log for later, like `cp '<SAVED_VARS>/ESOProfiler.lua' '<TARGET_DIR>/2023-01-23_furc_s1.lua'
+
+Running benchmarks and tests is similar, just without the profiler parts.
+
+## Cautions for Profiling and Benchmarks
+
+To rule out most side effects and difficulties in the profiling results:
+
+- try to limit profiling scenarios to 20 seconds
+- place your char in a spot with stable FPS in a regular zone
+- avoid houses or dungeon instances, which might have unknown side effects
+- make sure you're running only essential AddOns
+- make sure you are not already logging with another tool
+- record multiple sessions, if the numbers look off
+
+# 🚀 Benchmarks
+
+- get some metrics on performance and throughput
+- that way you can check if major changes improved or worsened stuff
+- do not use with profiler (incompatible with coroutines)
+- check [FurCDev/Tests.lua](../FurnitureCatalogue_DevUtility/Tests.lua#L9999) for implementation and call details
+
+# 🔎 Tests
+
+- mainly for regression tests
+- check if stuff still works like it should
+- check [FurCDev/Tests.lua](../FurnitureCatalogue_DevUtility/Tests.lua#L9999) for implementation and call details
+
+
+# 🎬 Scenarios for Profiling
+
+- performs certain UI interaction steps always in the same way
+- automatically runs profiler
+- scenarios are in [FurCDev/Tests.lua](../FurnitureCatalogue_DevUtility/Tests.lua)
 
 ## Prerequisites
 
@@ -35,29 +78,6 @@ Disable FurC debug output
 
 If you're running automated UI scenarios don't touch keys until it's done.
 
-# HowTo
-
-How to run scenarios:
-
-1. perform UI reload
-2. wait for 30-60 seconds in case some AddOns have delayed loading
-3. open profiler UI to see progress when it finishes
-4. call test from chat window like /script FurCDev.Profiler.s1()
-5. it opens FurC GUI, resets any filters and waits for 10 sec (hands off mouse and keyboard, also Game must have focus)
-6. after that preparation the profiling begins
-7. wait for EsoProfiler to generate the report
-8. export tracelog for Perfetto or use the ESOProfiler report viewer ingame
-9. or save log for later, like `cp '<SAVED_VARS>/ESOProfiler.lua' '<TARGET_DIR>/2023-01-23_furc_s1.lua'
-
-## Cautions
--- To rule out most side effects and difficulties in the profiling results:
---    try to limit profiling scenarios to 20 seconds
---    place your char in a spot with stable FPS in a regular zone
---    avoid houses or dungeon instances, which might have unknown side effects
---    make sure you're running only essential AddOns
---    make sure you are not already logging with another tool
---    record multiple sessions, if the numbers look off
-
 # Scenarios
 
 ## Scenario 1: Re-Initialise database
@@ -87,7 +107,7 @@ Prerequisites: ❌clearAll
 
 Check if the filters make a difference in search performance.
 
-Prerequisites: ❌clearAll,👑crowns,📰rumour
+Prerequisites: ❌clearAll, 👑crowns, 📰rumour
 
 1. 🔎 search "blessed" (type fast `b`,`l`,`e`,`s`,`s`,`e`,`d`)
    - should return 12+ items
@@ -99,7 +119,7 @@ Prerequisites: ❌clearAll,👑crowns,📰rumour
 
 Check filter performance.
 
-Prerequisites: ❌clearAll,DB3️⃣,DB2️⃣,DB1️⃣
+Prerequisites: ❌clearAll, DB3️⃣, DB2️⃣, DB1️⃣
 
 1. 🔎 filter "Source: Purchasable Gold"
 2. 🔎 filter "Version: Elsweyr"
@@ -109,7 +129,7 @@ Prerequisites: ❌clearAll,DB3️⃣,DB2️⃣,DB1️⃣
 
 Check if the filters make a difference in filter performance.
 
-Prerequisites: ❌clearAll,DB3️⃣,DB2️⃣,DB1️⃣
+Prerequisites: ❌clearAll, DB3️⃣, DB2️⃣, DB1️⃣
 
 1. 🔎 filter "Source: Purchasable Gold"
 2. 🔎 filter "Version: Elsweyr"
@@ -128,3 +148,4 @@ Prerequisites: ❌clearAll
    - should return 4746+ items
 3. 🔎 search "blessed" (type fast `b`,`l`,`e`,`s`,`s`,`e`,`d`)
    - should return 3+ items
+

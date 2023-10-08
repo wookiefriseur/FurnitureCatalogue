@@ -1,4 +1,3 @@
-local currentChar = FurC.CharacterName
 local task = LibAsync:Create("FurnitureCatalogue_ScanDataFiles")
 
 local lastLink = nil

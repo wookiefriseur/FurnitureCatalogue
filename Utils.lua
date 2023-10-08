@@ -69,8 +69,8 @@ function this.SortTable(tTable, sortKey, SortOrderUp)
   local ret = {}
   local scannedLinks = {}
   for _, k in ipairs(keys) do
-    entry = tTable[k]
-    itemLink = entry["itemLink"]
+    local entry = tTable[k]
+    local itemLink = entry["itemLink"]
     local ingredients = entry["ingredients"]
     local index = scannedLinks[itemLink] or k
 
@@ -489,6 +489,20 @@ end
     |                     |
     |   FURNITURE UTILS   |
     |_____________________|]]
+
+-- GetItemLinkFurnitureDataId
+-- GetItemUniqueIdFromFurnitureId(126559)
+-- GetItemLinkItemId
+-- GetItemLinkName
+-- IsItemLinkFurnitureRecipe
+-- GetItemLinkRecipeResultItemLink
+-- FURNITURE_THEME_TYPE_NORD
+-- GetNumFurnitureCategories
+-- GetFurnitureCategoryId(*luaindex* _categoryIndex_)
+-- GetFurnitureCategoryName(*integer* _furnitureCategoryId_)
+-- GetFurnitureCategoryInfo(*integer* _furnitureCategoryId_)
+-- GetFurnitureSubcategoryId
+-- GetFurnitureIdFromCollectibleId
 
 ---Check if item is a furnishing
 ---@param itemLink string

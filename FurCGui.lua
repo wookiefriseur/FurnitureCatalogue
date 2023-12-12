@@ -426,7 +426,7 @@ local function createGui()
     local function createLine(i, predecessor)
       predecessor = predecessor or FurCGui_ListHolder
 
-      ---@type Control
+      ---@class Control
       local line = WINDOW_MANAGER:CreateControlFromVirtual("FurC_ListItem_" .. i, FurCGui_ListHolder, FurC.SlotTemplate)
 
       line.icon = line:GetNamedChild("Button"):GetNamedChild("Icon")
@@ -475,6 +475,7 @@ local function createGui()
       local predecessor = buttons[#buttons] or parent
       local controlType = "FurC_QualityFilterButton"
 
+      ---@class ButtonControl
       local button = WINDOW_MANAGER:CreateControlFromVirtual(parent:GetName() .. name, parent, controlType)
       local ctrlName = string.lower(name)
       button:SetNormalTexture(string.format("FurnitureCatalogue/textures/%s_up.dds", ctrlName))
@@ -509,8 +510,8 @@ local function createGui()
 
       local name = parent:GetName() .. "Button" .. tostring(craftingType)
 
+      ---@class ButtonControl
       local button = WINDOW_MANAGER:CreateControlFromVirtual(name, parent, "FurC_CraftingTypeFilterButton")
-
       button:SetNormalTexture(string.format("%s%s", textureName, "_up.dds"))
       button:SetMouseOverTexture(string.format("%s%s", textureName, "_over.dds"))
       button:SetPressedTexture(string.format("%s%s", textureName, "_down.dds"))

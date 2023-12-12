@@ -926,6 +926,7 @@ LibCharacterKnowledge.EVENT_UPDATE_REFRESH = 2
 ---@class ESO_PROFILER
 ---@field GenerateReport fun()
 ESO_PROFILER = {}
+
 function StartScriptProfiler() end
 function StopScriptProfiler() end
 
@@ -933,7 +934,20 @@ function StopScriptProfiler() end
 ---@param message string
 function RecordScriptProfilerUserEvent(message) end
 
+---Deep copy a table
+---@param source table
+---@param dest table|nil
+---@return table result
+function ZO_DeepTableCopy(source, dest)
+  return {}
+end
+
 -- UI Element overrides
+---@class Control
+---@field dataEntry table
+---@field icon Control
+---@field data table
+---@field slotControlType fun() : string
 
 ---@class EditControl:Control
 ---@field TakeFocus fun()
@@ -941,11 +955,12 @@ function RecordScriptProfilerUserEvent(message) end
 ---@field Clear fun()
 ---@field InsertText fun(self: EditControl, text: string)
 
----@class Control
+---@class FurC_OptionsPanelCombobox1 : Control
+---@field m_comboBox ZO_ComboBox_Base
 FurC_OptionsPanelCombobox1 = {}
 
----@class ZO_ComboBox_Base
-FurC_OptionsPanelCombobox1.m_comboBox = {}
+---@class FurCGui_ListHolder
+FurCGui_ListHolder = {}
 
 --[[ ToDo: hstructure syntax support (low priority)
 

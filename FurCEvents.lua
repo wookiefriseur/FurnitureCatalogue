@@ -32,6 +32,8 @@ local function getItemKnowledge(itemLink)
   return FurC.IsAccountKnown(itemId, recipeArray)
 end
 
+---Set tooltips for inventory items
+---@param control Control
 local function updateItemInInventory(control)
   if "listSlot" ~= control.slotControlType then
     return

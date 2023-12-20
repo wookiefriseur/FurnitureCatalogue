@@ -3,7 +3,7 @@
   xsi:noNamespaceSchemaLocation="http://sir.insidi.at/or/schema/esoui.xsd">
   <Controls>
     <TopLevelControl name="FurCDevControl" clampedToScreen="true" movable="true" mouseEnabled="true"
-      hidden="true" resizeHandleSize="10">
+      hidden="true" resizeHandleSize="20">
       <Dimensions x="600" y="500" />
       <Anchor point="CENTER" relativeTo="GUI_ROOT" relativePoint="CENTER" offsetX="-125"
         offsetY="-140" />

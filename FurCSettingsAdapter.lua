@@ -318,34 +318,28 @@ function FurC.GetSearchFilter()
   return FurC.SearchFilter or ""
 end
 
-local alreadySearching = false
-local alreadyReset = false
-local function resetSearch()
-  alreadySearching = false
-  alreadyReset = false
-end
-
+local searchId = nil
 local lastText = ""
 local function doSearchOnUpdate()
-  if alreadyReset then
-    return
-  end
-  if alreadySearching then
-    zo_callLater(resetSearch, 200)
-    return
-  end
   local text = FurC_SearchBox:GetText()
   if #text > 0 and #text < 3 then
     return
   end
-  if LocaleAwareToLower(lastText) ~= LocaleAwareToLower(text) then
-    FurC.Logger:Verbose("Search changed: '%s' --> '%s'", lastText, text)
-    lastText = text
-    FurC.SearchFilter = text
 
-    FurC.GuiOnSliderUpdate(FurCGui_ListHolder_Slider, 0)
-    FurC.UpdateGui()
+  if searchId then
+    zo_removeCallLater(searchId)
   end
+
+  searchId = zo_callLater(function()
+    if LocaleAwareToLower(lastText) ~= LocaleAwareToLower(text) then
+      FurC.Logger:Verbose("Search changed: '%s' --> '%s'", lastText, text)
+      lastText = text
+      FurC.SearchFilter = text
+
+      FurC.GuiOnSliderUpdate(FurCGui_ListHolder_Slider, 0)
+      FurC.UpdateGui()
+    end
+  end, 1000)
 end
 
 function FurC.GuiSetSearchboxTextFrom(control)

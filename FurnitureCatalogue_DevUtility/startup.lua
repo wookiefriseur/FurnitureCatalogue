@@ -12,12 +12,20 @@ local function toggleEditBox()
   control:SetHidden(not control:IsHidden())
 end
 this.ToggleEditBox = toggleEditBox
-SLASH_COMMANDS["/furcdev"] = this.ToggleEditBox
 
 local function init(_, addonName)
   if addonName ~= this.name then
     return
   end
+
+  SLASH_COMMANDS["/furcdev"] = function()
+    this.ToggleEditBox()
+  end
+
+  if sidTools then
+    SLASH_COMMANDS["/dumpfurniture"] = FurCDev.DumpFurniture
+  end
+
   this.textbox = FurCDevControlBox
   this.textbox:SetMaxInputChars(3000)
   this.InitRightclickMenu()

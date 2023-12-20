@@ -608,7 +608,6 @@ FurC.Rumours[ver.WEREWOLF] = {
   [121004] = dataminedUnclear, -- Hedge, Solid Arc
   [121000] = dataminedUnclear, -- Shrub, Trimmed Green
   [120987] = dataminedUnclear, -- Dark Elf Lightpost, Capped
-  [120986] = dataminedUnclear, -- Dark Elf Lightpost, Full
   [120985] = dataminedUnclear, -- Dark Elf Lightpost, Single
   [120873] = dataminedUnclear, -- Daedric Coffin
   [120871] = dataminedUnclear, -- Deadric Vase, Spiked

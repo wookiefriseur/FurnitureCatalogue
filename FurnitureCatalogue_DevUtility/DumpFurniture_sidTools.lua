@@ -1,7 +1,9 @@
 local recipeResultIds = {}
 
+local this = FurCDev or {}
+
 -- skip dump functionality without sidTools
-if not sidTools then
+if not FurC or not sidTools then
   return
 end
 
@@ -9,17 +11,12 @@ local getItemLink = FurC.Utils.GetItemLink
 local getItemId = FurC.Utils.GetItemId
 
 local function addItemLink(data)
-  if not FurC or not sidTools then
-    return
-  end
-
   local logger = FurC.Logger
 
   local itemLink = getItemLink(data.id)
   if not FurC.ShouldBeInFurC(itemLink) then
     return
   end
-
   if data.itemType == ITEMTYPE_FURNISHING then
     if IsItemLinkPlaceableFurniture(itemLink) then
       logger:Debug("item is furniture " .. itemLink)
@@ -43,11 +40,7 @@ local function addItemLink(data)
   end
 end
 
-local function reloadui()
-  ReloadUI("ingame")
-end
-
-SLASH_COMMANDS["/dumpfurniture"] = function()
+local function dumpFurniture()
   local LAM = LibAddonMenu2
   local logger = FurC.Logger
 
@@ -78,6 +71,9 @@ SLASH_COMMANDS["/dumpfurniture"] = function()
   end
 
   if LAM and LAM.util then
-    LAM.util.ShowConfirmationDialog("Reload UI?", "You need to write sidTools' saved variables to disk.", reloadui)
+    LAM.util.ShowConfirmationDialog("Reload UI?", "You need to write sidTools' saved variables to disk.", function()
+      ReloadUI("ingame")
+    end)
   end
 end
+FurCDev.DumpFurniture = dumpFurniture

@@ -1,5 +1,7 @@
 local this = FurCDev or {}
 
+local utils = FurC.Utils
+
 FurCDevControl_LinkHandlerBackup_OnLinkMouseUp = nil
 this.textbox = this.textbox or FurCDevControlBox
 local textbox = this.textbox

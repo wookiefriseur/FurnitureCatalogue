@@ -129,8 +129,7 @@ function this.getOrCreateLogger()
   return logger
 end
 
--- initialization stuff
-local function initialise(eventCode, addOnName)
+local function init(_, addOnName)
   if addOnName ~= this.name then
     return
   end
@@ -182,4 +181,4 @@ end
 
 ZO_CreateStringId("SI_BINDING_NAME_TOGGLE_FURNITURE_CATALOGUE", "Toggle main window")
 ZO_CreateStringId("SI_BINDING_NAME_TOGGLE_FURNITURE_CATALOGUE_RECIPE", "Toggle Blueprint on tooltip")
-EVENT_MANAGER:RegisterForEvent(this.name, EVENT_ADD_ON_LOADED, initialise)
+EVENT_MANAGER:RegisterForEvent(this.name, EVENT_ADD_ON_LOADED, init)

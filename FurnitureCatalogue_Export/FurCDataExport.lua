@@ -52,14 +52,13 @@ function this.Export()
   ReloadUI("ingame")
 end
 
-SLASH_COMMANDS["/furcexport"] = function()
-  this.Export()
-end
-
--- initialization stuff
 local function init(_, addOnName)
   if addOnName ~= this.name then
     return
+  end
+
+  SLASH_COMMANDS["/furcexport"] = function()
+    this.Export()
   end
 
   this.settings = ZO_SavedVars:NewAccountWide(this.name, nil, nil, defaults)

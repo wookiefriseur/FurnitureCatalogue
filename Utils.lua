@@ -545,6 +545,10 @@ function this.GetItemId(itemLink)
   local _, _, _, itemId = ZO_LinkHandler_ParseLink(itemLink)
   return tonumber(itemId)
 end
+-- Alias for LibPrice
+---@deprecated will be replaced by API function in the future
+---@see FurC.Utils.GetItemId
+FurC.GetItemId = this.GetItemId
 
 -- Alias for LibPrice
 ---@deprecated will be replaced by API function in the future

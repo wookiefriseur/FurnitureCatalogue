@@ -339,7 +339,7 @@ local function doSearchOnUpdate()
       FurC.GuiOnSliderUpdate(FurCGui_ListHolder_Slider, 0)
       FurC.UpdateGui()
     end
-  end, 1000)
+  end, 500)
 end
 
 function FurC.GuiSetSearchboxTextFrom(control)

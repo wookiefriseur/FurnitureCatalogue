@@ -3,8 +3,9 @@
   xsi:noNamespaceSchemaLocation="http://sir.insidi.at/or/schema/esoui.xsd">
   <Controls>
     <TopLevelControl name="FurCDevControl" clampedToScreen="true" movable="true" mouseEnabled="true"
-      hidden="true" resizeHandleSize="20">
+      hidden="true" resizeHandleSize="15">
       <Dimensions x="600" y="500" />
+      <DimensionConstraints minX="300" minY="300" />
       <Anchor point="CENTER" relativeTo="GUI_ROOT" relativePoint="CENTER" offsetX="-125"
         offsetY="-140" />
       <Controls>
@@ -33,12 +34,23 @@
             mouseOver="/esoui/art/help/help_tabicon_feedback_over.dds"
           />
         </Button>
+        <Button name="$(parent)_fromTrader" inherits="ZO_ButtonBehaviorClickSound">
+          <OnClicked>FurCDev.AddAllFromTrader()</OnClicked>
+          <Dimensions x="40" y="40" />
+          <Anchor point="RIGHT" relativeTo="$(parent)_clear" relativePoint="LEFT" offsetX="-10"
+            offsetY="0" />
+          <Textures
+            normal="esoui/art/buttons/plus_up.dds"
+            pressed="esoui/art/buttons/plus_down.dds"
+            mouseOver="esoui/art/buttons/plus_over.dds"
+          />
+        </Button>
         <EditBox name="$(parent)Box"
           inherits="ZO_DefaultEditMultiLine ZO_DefaultEditForDarkBackdrop">
           <Anchor point="TOPLEFT" relativeTo="$(parent)" relativePoint="TOPLEFT" offsetX="50"
             offsetY="50" />
           <Anchor point="BOTTOMRIGHT" relativeTo="$(parent)" relativePoint="BOTTOMRIGHT"
-            offsetX="50" />
+            offsetX="-50" offsetY="-50" />
           <OnFocusGained>FurCDev.selectEntireTextbox()</OnFocusGained>
           <OnTextChanged>FurCDev.onTextboxTextChanged()</OnTextChanged>
         </EditBox>

@@ -6,7 +6,7 @@ local ver = FurC.Constants.Versioning
 local src = FurC.Constants.ItemSources
 
 local utils = FurC.Utils
-local getItemId = FurC.Utils.GetItemId
+local getItemId = utils.GetItemId
 local getItemLink = FurC.Utils.GetItemLink
 
 local function getCurrentChar()

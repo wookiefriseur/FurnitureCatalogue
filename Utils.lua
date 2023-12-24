@@ -596,5 +596,72 @@ end
     |     OTHER UTILS     |
     |_____________________|]]
 
+---Get all furnishings and blueprints detected from the trader
+---Example: /script d(FurC.Utils.GetFurnitureLinksFromTrader())
+---@return table
+function this.GetFurnitureLinksFromTrader()
+  if IsStoreEmpty() then
+    FurC.Logger:Info("No store items found.")
+    return {}
+  end
+
+  local items = {}
+
+  local numStoreItems = GetNumStoreItems()
+  ---@type luaindex i
+  for i = 1, numStoreItems do
+    local itemLink = GetStoreItemLink(i, LINK_STYLE_DEFAULT)
+    if this.IsFurniture(itemLink) then
+      table.insert(items, itemLink)
+    end
+  end
+
+  FurC.Logger:Info("Trader has %d furnishings (total items: %d)", #items, numStoreItems)
+  return items
+end
+
+-- CHARACTER KNOWLEDGE --
+
+-- todo
+function this.IsAccountKnown(recipeKey, recipeArray)
+  if recipeKey == nil and recipeArray == nil then
+    return false
+  end
+  recipeArray = recipeArray or FurC.settings.data[recipeKey]
+  return not (nil == recipeArray or nil == recipeArray.characters or NonContiguousCount(recipeArray.characters) == 0)
+
+  --[[
+  assert(false, "Not Yet Implemented")
+  if recipeKey == nil and recipeArray == nil then
+    return false
+  end
+  recipeArray = recipeArray or FurC.settings.data[recipeKey]
+  return not (nil == recipeArray or nil == recipeArray.characters or NonContiguousCount(recipeArray.characters) == 0)
+  ]]
+end
+
+-- todo
+function this.CanCraft(recipeKey, recipeArray)
+  if recipeKey == nil and recipeArray == nil then
+    return false
+  end
+  recipeArray = recipeArray or FurC.settings.data[recipeKey]
+  if FurC.IsAccountKnown(recipeKey, recipeArray) then
+    return recipeArray.characters[this.GetCurrentChar()]
+  end
+  return false
+  --[[
+  assert(false, "Not Yet Implemented")
+  if recipeKey == nil and recipeArray == nil then
+    return false
+  end
+  recipeArray = recipeArray or FurC.settings.data[recipeKey]
+  if this.IsAccountKnown(recipeKey, recipeArray) then
+    return recipeArray.characters[this.getCurrentChar()]
+  end
+  return false
+  ]]
+end
+
 -- make available for use and autocompletion
 FurC.Utils = this

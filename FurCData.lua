@@ -7,25 +7,8 @@ local src = FurC.Constants.ItemSources
 
 local utils = FurC.Utils
 local getItemId = utils.GetItemId
-local getItemLink = FurC.Utils.GetItemLink
-
-local function getCurrentChar()
-  return zo_strformat(GetUnitName("player"))
-end
-
-local function printItemLink(itemId)
-  if nil == itemId then
-    return
-  end
-  itemId = tostring(itemId)
-  local itemLink = nil
-  if #itemId > 55 then
-    itemLink = itemId
-  end
-  itemLink = itemLink or zo_strformat("|H1:item:<<1>>:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h", itemId)
-  FurC.Logger:Info("[%s] = '',\t\t-- %s", itemId, GetItemLinkName(itemLink))
-end
-FurC.PrintItemLink = printItemLink
+local getItemLink = utils.GetItemLink
+local getCurrentChar = utils.GetCurrentChar
 
 local function addDatabaseEntry(recipeKey, recipeArray)
   if recipeKey and recipeArray and {} ~= recipeArray then
@@ -174,7 +157,7 @@ function FurC.Find(itemOrBlueprintLink)
 end
 
 function FurC.Delete(itemOrBlueprintLink) -- sets recipeArray, returns it - calls scanItemLink
-  local recipeArray = getItemId(itemOrBlueprintLink)
+  local recipeArray = FurC.Find(itemOrBlueprintLink)
   if nil == recipeArray then
     return
   end
@@ -228,25 +211,6 @@ end
 
 function FurC.TryCreateRecipeEntry(recipeListIndex, recipeIndex) -- returns scanRecipeIndices, called from Events.lua
   return scanRecipeIndices(recipeListIndex, recipeIndex)
-end
-
-function FurC.IsAccountKnown(recipeKey, recipeArray)
-  if recipeKey == nil and recipeArray == nil then
-    return false
-  end
-  recipeArray = recipeArray or FurC.settings.data[recipeKey]
-  return not (nil == recipeArray or nil == recipeArray.characters or NonContiguousCount(recipeArray.characters) == 0)
-end
-
-function FurC.CanCraft(recipeKey, recipeArray)
-  if recipeKey == nil and recipeArray == nil then
-    return false
-  end
-  recipeArray = recipeArray or FurC.settings.data[recipeKey]
-  if FurC.IsAccountKnown(recipeKey, recipeArray) then
-    return recipeArray.characters[getCurrentChar()]
-  end
-  return false
 end
 
 function FurC.GetCraftingSkillType(recipeKey, recipeArray)

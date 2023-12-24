@@ -37,7 +37,7 @@ function this.Export()
   for _, itemName in pairs(tkeys) do
     local itemLink = itemNames[itemName]
     local recipeArray = FurC.Find(itemLink)
-    local known = FurC.IsAccountKnown(itemLink, recipeArray)
+    local known = FurC.Utils.IsAccountKnown(itemLink, recipeArray)
 
     local exportArray = (known and exportKnown) or exportUnknown
     local mats = FurC.GetMats(itemLink, recipeArray, false, true)

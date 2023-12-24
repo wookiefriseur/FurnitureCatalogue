@@ -39,7 +39,7 @@ local function addTooltipData(control, itemLink)
     return
   end
 
-  local unknown = not FurC.CanCraft(itemId, recipeArray)
+  local unknown = not FurC.Utils.CanCraft(itemId, recipeArray)
   local stringTable = {}
 
   -- if craftable:

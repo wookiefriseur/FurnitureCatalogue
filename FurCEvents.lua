@@ -27,9 +27,9 @@ local function getItemKnowledge(itemLink)
   local recipeArray = FurC.Find(itemLink)
   local itemId = recipeArray["itemId"]
   if FurC.GetUseInventoryIconsOnChar() then
-    return FurC.CanCraft(itemId, recipeArray)
+    return FurC.Utils.CanCraft(itemId, recipeArray)
   end
-  return FurC.IsAccountKnown(itemId, recipeArray)
+  return FurC.Utils.IsAccountKnown(itemId, recipeArray)
 end
 
 ---Set tooltips for inventory items

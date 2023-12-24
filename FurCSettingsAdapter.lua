@@ -330,6 +330,7 @@ local function doSearchOnUpdate()
     zo_removeCallLater(searchId)
   end
 
+  local searchDelayMs = 750
   searchId = zo_callLater(function()
     if LocaleAwareToLower(lastText) ~= LocaleAwareToLower(text) then
       FurC.Logger:Verbose("Search changed: '%s' --> '%s'", lastText, text)
@@ -339,7 +340,7 @@ local function doSearchOnUpdate()
       FurC.GuiOnSliderUpdate(FurCGui_ListHolder_Slider, 0)
       FurC.UpdateGui()
     end
-  end, 500)
+  end, searchDelayMs)
 end
 
 function FurC.GuiSetSearchboxTextFrom(control)

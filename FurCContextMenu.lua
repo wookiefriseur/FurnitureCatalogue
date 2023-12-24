@@ -153,6 +153,7 @@ function FurC_HandleInventoryContextMenu(control)
   end
 
   local st = ZO_InventorySlot_GetType(control)
+  ---@type string itemLink
   local itemLink = nil
   if
     st == SLOT_TYPE_ITEM
@@ -163,11 +164,15 @@ function FurC_HandleInventoryContextMenu(control)
     local bagId, slotId = ZO_Inventory_GetBagAndIndex(control)
     itemLink = GetItemLink(bagId, slotId, linkStyle)
   elseif st == SLOT_TYPE_STORE_BUY then
-    itemLink = GetStoreItemLink(control.index)
+    itemLink = GetStoreItemLink(control.index, LINK_STYLE_DEFAULT)
   elseif st == SLOT_TYPE_TRADING_HOUSE_ITEM_RESULT then
     itemLink = GetTradingHouseSearchResultItemLink(ZO_Inventory_GetSlotIndex(control), linkStyle)
   elseif st == SLOT_TYPE_TRADING_HOUSE_ITEM_LISTING then
     itemLink = GetTradingHouseListingItemLink(ZO_Inventory_GetSlotIndex(control), linkStyle)
+  end
+
+  if not FurC.Utils.IsFurniture(itemLink) then
+    return
   end
 
   local recipeArray = FurC.Find(itemLink)

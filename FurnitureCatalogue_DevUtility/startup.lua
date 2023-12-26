@@ -8,10 +8,9 @@ this.name = "FurnitureCatalogue_DevUtility"
 this.control = control
 this.textbox = FurCDevControlBox
 
-local function toggleEditBox()
+function this.ToggleEditBox()
   control:SetHidden(not control:IsHidden())
 end
-this.ToggleEditBox = toggleEditBox
 
 local function init(_, addonName)
   if addonName ~= this.name then
@@ -37,5 +36,5 @@ function FurnitureCatalogueDevUtility_AddToTextbox()
   FurCDevControl_HandleInventoryContextMenu(moc())
 end
 
-ZO_CreateStringId("SI_BINDING_NAME_FURC_CONCAT_TO_TEXTBOX", "Add to |cFF3333FurCDev|r text box")
+ZO_CreateStringId("SI_BINDING_NAME_FURCDEV_TOGGLE_TEXTBOX", "Toggle |cFF3333FurCDev|r text box")
 EVENT_MANAGER:RegisterForEvent(this.name, EVENT_ADD_ON_LOADED, init)

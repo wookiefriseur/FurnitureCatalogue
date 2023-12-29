@@ -891,7 +891,7 @@ Logger = nil
 
 ---@class LibCharacterKnowledge
 ---@field GetServerList fun(): table
----@field GetCharacterList fun(server: any): table
+---@field GetCharacterList fun(server: any): table {id: charId, account: @account, name: charName}
 ---@field GetItemLinkFromItemId fun(itemId: any): any
 ---@field GetItemName fun(item: any): string
 ---@field GetItemCategory fun(item: any): number
@@ -940,6 +940,11 @@ function RecordScriptProfilerUserEvent(message) end
 ---@return table result
 function ZO_DeepTableCopy(source, dest)
   return {}
+end
+
+--- @return string displayName
+function GetDisplayName()
+  return "@accountName"
 end
 
 -- UI Element overrides

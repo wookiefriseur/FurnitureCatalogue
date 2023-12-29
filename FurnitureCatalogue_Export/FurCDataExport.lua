@@ -8,6 +8,7 @@ this.author = "manavortex"
 
 local defaults = {}
 local src = FurC.Constants.ItemSources
+local utils = FurC.Utils
 
 local function getSortTable(tbl)
   local list = {}
@@ -27,7 +28,7 @@ function this.Export()
   local itemNames = {}
   for itemId, recipeArray in pairs(FurC.settings.data) do
     if recipeArray.origin == src.CRAFTING then
-      itemNames[GetItemLinkName(FurC.Utils.GetItemLink(itemId))] = FurC.Utils.GetItemLink(itemId)
+      itemNames[GetItemLinkName(utils.GetItemLink(itemId))] = utils.GetItemLink(itemId)
     end
   end
 
@@ -37,12 +38,11 @@ function this.Export()
   for _, itemName in pairs(tkeys) do
     local itemLink = itemNames[itemName]
     local recipeArray = FurC.Find(itemLink)
-    local known = FurC.Utils.IsAccountKnown(itemLink, recipeArray)
+    local known = utils.IsAccountKnown(itemLink)
 
     local exportArray = (known and exportKnown) or exportUnknown
     local mats = FurC.GetMats(itemLink, recipeArray, false, true)
-    local knowledge = (known and (FurC.GetCrafterList(itemLink, recipeArray) .. ": "):gsub("Can be crafted by ", ""))
-      or ""
+    local knowledge = (known and (utils.GetCrafterList(itemLink) .. ": "):gsub("Can be crafted by ", "")) or ""
     local exportString = zo_strformat("<<1>><<2>>", knowledge, mats)
     exportArray[itemName] = exportString
   end

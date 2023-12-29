@@ -124,8 +124,6 @@ function FurC.SetFontSize(value)
   end
   FurC.settings["fontSize"] = value
 
-  local size = tostring(value)
-
   FurC.SetLineHeight()
 
   if nil ~= task then
@@ -397,7 +395,6 @@ end
 FurC.DropdownChoices = {
   ["Source"] = nil,
   ["Version"] = nil,
-  ["Character"] = nil,
 }
 
 function FurC.GetDropdownChoice(dropdownName)
@@ -421,34 +418,18 @@ local function getDropdownIndex(dropdownName, value)
   return #dropdown
 end
 
-local dropdownData = FurC.DropdownData
 
 -- Source: All, All (craftable), Craftable (known), craftable (unknown), purchaseable
--- Character: Accountwide, crafter1, crafter2...
 -- Version: All, Homestead, Morrowind
 function FurC.SetDropdownChoice(dropdownName, textValue, dropdownIndex)
   textValue = textValue or FurC.GetDefaultDropdownChoice(dropdownName)
-  local dropdownIndex = dropdownIndex or getDropdownIndex(dropdownName, textValue) or 0
+  dropdownIndex = dropdownIndex or getDropdownIndex(dropdownName, textValue) or 0
 
   FurC.Logger:Verbose("SetDropdownChoice(%s, %s (Index: %s))", dropdownName, textValue, dropdownIndex)
 
   FurC.DropdownChoices[dropdownName] = dropdownIndex
 
-  -- if we're setting the dropdown menu "source" to "purchaseable", set "character" to "All"
-  if dropdownName == "Source" then
-    if dropdownIndex > src.CRAFTING_UNKNOWN or dropdownIndex < src.CRAFTING then
-      FurC.DropdownChoices["Character"] = 1
-      FurC_DropdownCharacter:GetNamedChild("SelectedItemText"):SetText(FurC.DropdownData.ChoicesCharacter[1])
-    end
-  end
-  -- if we're setting the characters array to something other than 1, we can't use source 1 or 5
-  if dropdownName == "Character" and (dropdownIndex > 1) then
-    if FurC.DropdownChoices["Source"] > src.CRAFTING_UNKNOWN or FurC.DropdownChoices["Source"] < src.CRAFTING then
-      local knownIndex = src.CRAFTING_KNOWN
-      FurC.DropdownChoices["Source"] = knownIndex
-      FurC_DropdownSource:GetNamedChild("SelectedItemText"):SetText(FurC.DropdownData.ChoicesSource[knownIndex])
-    end
-  end
+  -- todo: check/uncheck accountwide knowledge?
 
   FurC.DropdownChoices[dropdownName] = dropdownIndex
 
@@ -485,24 +466,6 @@ function FurC.GetDropdownChoiceTextual(dropdownName)
   local value = FurC.GetDropdownChoice(dropdownName)
   local dropdown = FurC.DropdownData["Choices" .. dropdownName]
   return FurC.DropdownData["Choices" .. dropdownName][value]
-end
-
-function FurC.GetAccountCrafters()
-  local ret = {}
-  for characterName, isCrafter in pairs(FurC.settings.accountCharacters) do
-    if isCrafter then
-      table.insert(ret, characterName)
-    end
-  end
-  return ret
-end
-
-function FurC.GetAccountCharacters()
-  local ret = {}
-  for characterName, isCrafter in pairs(FurC.settings.accountCharacters) do
-    table.insert(ret, characterName)
-  end
-  return ret
 end
 
 function FurC.GetSkipInitialScan()
@@ -563,38 +526,7 @@ end
 function FurC.WipeDatabase()
   d("resetting Furniture Catalogue data...")
   FurC.settings.data = {}
-  FurC.settings.accountCharacters = {}
   FurC.settings.excelExport = {}
   FurC.ScanRecipes(true, true)
   FurC.Logger:Info("Scan complete")
-end
-
-function FurC.DeleteCharacter(characterName)
-  for key, value in pairs(FurC.settings.accountCharacters) do
-    if value == characterName then
-      FurC.settings.accountCharacters[key] = false
-    end
-  end
-
-  for recipeKey, recipeArray in pairs(FurC.settings.data) do
-    if nil ~= recipeArray.craftingSkill then
-      recipeArray.characters[characterName] = nil
-    end
-  end
-
-  FurC.Logger:Info(
-    "%s deleted from |c2266ffFurniture Catalogue|r database. Entry will disappear from settings dropdown after the next reloadui.",
-    characterName
-  )
-
-  local guiDropdownEntries = FurC_OptionsPanelCombobox1.m_comboBox.m_sortedItems
-  if nil == guiDropdownEntries then
-    return
-  end
-  for index, data in pairs(guiDropdownEntries) do
-    if data.name == characterName then
-      guiDropdownEntries[index] = nil
-      return
-    end
-  end
 end

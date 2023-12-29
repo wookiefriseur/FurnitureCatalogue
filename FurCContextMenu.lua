@@ -6,6 +6,7 @@ local FURC_S_TOGGLE_SL = GetString(SI_FURC_TOGGLE_SHOPPINGLIST)
 
 local linkStyle = LINK_STYLE_DEFAULT
 local src = FurC.Constants.ItemSources
+local utils = FurC.Utils
 
 local menuEventQueued = false
 
@@ -125,24 +126,6 @@ function FurC_HandleClickEvent(itemLink, mButton, _, _, linkType, ...)
   end
 end
 
-function FurC_HandleMouseEnter(...)
-  local inventorySlot = moc()
-
-  if nil == inventorySlot or nil == inventorySlot.dataEntry then
-    return
-  end
-  local data = inventorySlot.dataEntry.data
-  if nil == data then
-    return
-  end
-
-  local bagId, slotIndex = data.bagId, data.slotIndex
-  FurC.CurrentLink = GetItemLink(bagId, slotIndex, linkStyle)
-  if nil == FurC.CurrentLink then
-    return
-  end
-end
-
 -- thanks Randactyl for helping me with the handler :)
 function FurC_HandleInventoryContextMenu(control)
   if FurC.GetHideInventoryMenu() then
@@ -168,7 +151,7 @@ function FurC_HandleInventoryContextMenu(control)
     itemLink = GetTradingHouseListingItemLink(ZO_Inventory_GetSlotIndex(control), linkStyle)
   end
 
-  if not FurC.Utils.IsFurniture(itemLink) then
+  if not utils.IsFurniture(itemLink) then
     return
   end
 
@@ -188,13 +171,10 @@ function FurC_HandleInventoryContextMenu(control)
 end
 
 function FurC.OnControlMouseUp(control, button)
-  if nil == control then
+  if nil == control or button ~= MOUSE_BUTTON_INDEX_RIGHT then
     return
   end
 
-  if button ~= 2 then
-    return
-  end
   local itemLink = control.itemLink
 
   if nil == itemLink then
@@ -219,7 +199,6 @@ end
 
 function FurC.InitRightclickMenu()
   LINK_HANDLER:RegisterCallback(LINK_HANDLER.LINK_MOUSE_UP_EVENT, FurC_HandleClickEvent)
-  ZO_PreHook("ZO_InventorySlot_OnMouseEnter", FurC_HandleMouseEnter)
   ZO_PreHook("ZO_InventorySlot_ShowContextMenu", function(rowControl)
     FurC_HandleInventoryContextMenu(rowControl)
   end)

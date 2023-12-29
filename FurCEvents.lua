@@ -1,3 +1,6 @@
+FurC = FurC or {}
+local utils = FurC.Utils
+
 local em = EVENT_MANAGER
 
 local function onRecipeLearned(eventCode, recipeListIndex, recipeIndex)
@@ -24,12 +27,10 @@ local function createIcon(control)
 end
 
 local function getItemKnowledge(itemLink)
-  local recipeArray = FurC.Find(itemLink)
-  local itemId = recipeArray["itemId"]
   if FurC.GetUseInventoryIconsOnChar() then
-    return FurC.Utils.CanCraft(itemId, recipeArray)
+    return utils.IsCharKnown(itemLink)
   end
-  return FurC.Utils.IsAccountKnown(itemId, recipeArray)
+  return utils.IsAccountKnown(itemLink)
 end
 
 ---Set tooltips for inventory items

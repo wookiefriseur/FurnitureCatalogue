@@ -1,13 +1,13 @@
 local searchString = ""
 local dropdownChoiceVersion = 1
-local dropdownTextVersion = "All"
 local ddSource = 1
 local dropdownTextSource = "All"
-local dropdownChoiceCharacter = 1
-local ddTextCharacter = "Accountwide"
+local dropdownTextVersion = "All"
 local qualityFilter = {}
 local craftingTypeFilter = {}
 
+local accountwide = true
+local accountwideText = "Accountwide"
 local hideBooks = false
 local hideRumours = false
 local hideCrownStore = false
@@ -37,15 +37,10 @@ function FurC.SetFilter(useDefaults, skipRefresh)
   if useDefaults then
     dropdownChoiceVersion = FurC.GetDefaultDropdownChoice("Version")
     ddSource = FurC.GetDefaultDropdownChoice("Source")
-    dropdownChoiceCharacter = FurC.GetDefaultDropdownChoice("Character")
   else
     dropdownChoiceVersion = FurC.GetDropdownChoice("Version")
     ddSource = FurC.GetDropdownChoice("Source")
-    dropdownChoiceCharacter = FurC.GetDropdownChoice("Character")
   end
-
-  -- we need to hold the text here, in case it's not "All"
-  ddTextCharacter = FurC.GetDropdownChoiceTextual("Character")
 
   qualityFilter = FurC.GetFilterQuality()
   craftingTypeFilter = FurC.GetFilterCraftingType()
@@ -59,7 +54,7 @@ function FurC.SetFilter(useDefaults, skipRefresh)
     and #searchString > 0
     and src.NONE == ddSource
     and ver.NONE == dropdownChoiceVersion
-    and 1 == dropdownChoiceCharacter
+    and 1 == accountwide
 
   showAllRumourOnTextSearch = showAllOnTextSearch and not FurC.GetFilterAllOnTextNoCrown()
   showAllCrownOnTextSearch = showAllOnTextSearch and not FurC.GetFilterAllOnTextNoCrown()
@@ -77,32 +72,20 @@ function FurC.InitFilters()
   FurC.SetFilterQuality(0)
   FurC.SetDropdownChoice("Source", FurC.GetDefaultDropdownChoiceText("Source"), FurC.GetDefaultDropdownChoice("Source"))
   FurC.SetDropdownChoice(
-    "Character",
-    FurC.GetDefaultDropdownChoiceText("Character"),
-    FurC.GetDefaultDropdownChoice("Character")
-  )
-  FurC.SetDropdownChoice(
     "Version",
     FurC.GetDefaultDropdownChoiceText("Version"),
     FurC.GetDefaultDropdownChoice("Version")
   )
 end
 
+--todo: pass recipeArray or itemLink
 local function isRecipeArrayKnown()
-  local known = utils.IsAccountKnown(recipeArray.itemLink)
-  if nil == recipeArray or not known then
-    return
+  if nil == recipeArray then
+    return false
   end
-  --todo: per char or accountwide?
-  if dropdownChoiceCharacter == 1 then
-    for name, value in pairs(recipeArray.characters) do
-      if value then
-        return true
-      end
-    end
-  else
-    return recipeArray.characters[ddTextCharacter]
-  end
+
+  local accountKnown = utils.IsAccountKnown(recipeArray.itemLink)
+  return (accountwide and accountKnown) or utils.IsCharKnown(recipeArray.itemLink)
 end
 
 -- Version: All, Homestead, Morrowind
@@ -146,10 +129,6 @@ local function matchSourceDropdown()
   end
   -- we're checking character knowledge
   return recipeArray.origin == ddSource
-end
-
-local function matchDropdownFilter()
-  return matchVersionDropdown() and matchSourceDropdown()
 end
 
 local function matchSearchString()

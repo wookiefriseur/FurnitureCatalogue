@@ -51,17 +51,17 @@ local defaults = {
 
   dropdownDefaults = {
     Source = 1,
-    Character = 1,
     Version = 1,
   },
-
-  accountCharacters = {},
 
   -- tooltips
   disableTooltips = false,
   coloredTooltips = true,
   dateFormat = "YYYY-MM-DD",
   hideKnowledge = false,
+
+  ---@type boolean Accountwide character knowledge
+  accountwide = true,
 
   hideBooks = true,
   hideDoubtfuls = true,
@@ -142,7 +142,7 @@ local function init(_, addOnName)
   this.CreateSettings(this.settings, defaults)
   this.Logger = this.getOrCreateLogger()
 
-  this.CharacterName = zo_strformat(GetUnitName("player"))
+  this.CharacterName = utils.GetCurrentChar()
 
   this.InitGui()
 

@@ -236,7 +236,6 @@ end
 function FurC.UpdateDropdownChoice(dropdownName, value)
   if nil == dropdownName then
     FurC.UpdateDropdownChoice("Version", value)
-    FurC.UpdateDropdownChoice("Character", value)
     FurC.UpdateDropdownChoice("Source", value)
     return
   end

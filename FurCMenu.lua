@@ -38,7 +38,7 @@ function FurC.CreateSettings(savedVars, defaults)
         FurC.WipeDatabase()
       end,
     },
-    { -- button: Reset database
+    { -- button: Rescan rumours
       type = "button",
       name = GetString(SI_FURC_STRING_MENU_RESCAN_RUMOUR_NAME),
       width = "half",
@@ -55,29 +55,6 @@ function FurC.CreateSettings(savedVars, defaults)
       func = function()
         FurC.ScanRecipes(true, false)
         FurC.UpdateGui()
-      end,
-    },
-    { -- button: Re-scan char
-      type = "button",
-      name = GetString(SI_FURC_STRING_MENU_SCAN_CHAR_NAME),
-      tooltip = GetString(SI_FURC_STRING_MENU_SCAN_CHAR_TT),
-      width = "half",
-      func = function()
-        FurC.ScanRecipes(false, true)
-        FurC.UpdateGui()
-      end,
-    },
-    { -- dropdown: delete character
-      type = "dropdown",
-      name = GetString(SI_FURC_STRING_MENU_DELETE_CHAR_NAME),
-      tooltip = GetString(SI_FURC_STRING_MENU_DELETE_CHAR_TT),
-      warning = GetString(SI_FURC_STRING_MENU_DELETE_CHAR_WARNING),
-      choices = FurC.GetAccountCharacters(),
-      getFunc = function()
-        return
-      end,
-      setFunc = function(value)
-        FurC.DeleteCharacter(value)
       end,
     },
 
@@ -256,17 +233,6 @@ function FurC.CreateSettings(savedVars, defaults)
           end,
           setFunc = function(value)
             FurC.SetDefaultDropdownChoice("Source", value)
-          end,
-        },
-        { -- dropdown: default character
-          type = "dropdown",
-          name = GetString(SI_FURC_STRING_MENU_DEFAULT_DD_CHAR),
-          choices = FurC.DropdownData.ChoicesCharacter,
-          getFunc = function()
-            return FurC.GetDefaultDropdownChoiceText("Character")
-          end,
-          setFunc = function(value)
-            FurC.SetDefaultDropdownChoice("Character", value)
           end,
         },
         { -- dropdown: default version

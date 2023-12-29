@@ -308,17 +308,17 @@
     </Button>
     <Button name="FurC_CraftingTypeFilterButton" virtual="true">
       <Dimensions x="40" y="40" />
-      <OnMouseEnter>FurC.GuiVirtualMouseOver(self)  </OnMouseEnter>
-      <OnMouseExit>FurC.GuiVirtualMouseOut(self)  </OnMouseExit>
-      <OnMouseUp>FurC.GuiCraftingTypeMouseUp(self)  </OnMouseUp>
+      <OnMouseEnter>FurC.GuiVirtualMouseOver(self)</OnMouseEnter>
+      <OnMouseExit>FurC.GuiVirtualMouseOut(self)</OnMouseExit>
+      <OnMouseUp>FurC.GuiCraftingTypeMouseUp(self)</OnMouseUp>
     </Button>
     <Control name="FurC_SlotTemplate" inherits="ZO_ListInventorySlotBehavior" virtual="true"
       mouseEnabled="true">
       <Dimensions x="300" />
-      <OnMouseEnter>FurC.GuiLineOnMouseEnter(self)        </OnMouseEnter>
-      <OnMouseExit>FurC.GuiLineOnMouseExit(self)        </OnMouseExit>
-      <OnMouseUp>FurC.OnControlMouseUp(self, button)      </OnMouseUp>
-      <OnMouseDoubleClick>FurC.OnControlDoubleClick(self)       </OnMouseDoubleClick>
+      <OnMouseEnter>FurC.GuiLineOnMouseEnter(self)</OnMouseEnter>
+      <OnMouseExit>FurC.GuiLineOnMouseExit(self)</OnMouseExit>
+      <OnMouseUp>FurC.OnControlMouseUp(self, button)</OnMouseUp>
+      <OnMouseDoubleClick>FurC.OnControlDoubleClick(self)</OnMouseDoubleClick>
       <Controls>
         <Texture name="$(parent)Bg" textureFile="EsoUI/Art/Miscellaneous/listItem_backdrop.dds"
           alpha="0.4">

@@ -601,16 +601,27 @@ end
 local LCK = LibCharacterKnowledge
 local currentAccount = GetDisplayName()
 
+--todo: fix /script d(FurC.Utils.GetBlueprintForItem("|H1:item:139184:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h"))
+--/script d(GetItemLinkFurnitureDataId("|H1:item:139184:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h"))
+-- /script d(GetFurnitureDataInfo(5135))
+-- /script d(GetItemUniqueIdFromFurnitureId(5135))
+
 --todo: it's not a list, it's a string
 ---Example: FurC.Utils.GetCrafterList("|H1:item:166781:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h")
-function this.GetCrafterList(itemLink)
-  if nil == itemLink then
+function this.GetCrafterList(itemLinkOrId)
+  if nil == itemLinkOrId then
     return ""
+  end
+
+  if type(itemLinkOrId) == "number" then
+    itemLinkOrId = this.GetItemLink(itemLinkOrId)
   end
 
   local crafters = {}
   local ret = GetString(SI_FURC_STRING_CRAFTABLE_BY)
-  for _, char in ipairs(LCK.GetItemKnowledgeList(itemLink)) do
+
+  itemLinkOrId = this.GetBlueprintForItem(itemLinkOrId)
+  for _, char in ipairs(LCK.GetItemKnowledgeList(itemLinkOrId)) do
     if char.account == currentAccount then
       if char.knowledge == LCK.KNOWLEDGE_KNOWN then
         table.insert(crafters, char.name)
@@ -641,6 +652,7 @@ function this.IsCharKnown(itemLinkOrId)
     return false
   end
 
+  -- builtin: IsItemLinkRecipeKnown(itemLink)
   local charKnowledge = LCK.GetItemKnowledgeForCharacter(itemLinkOrId)
   if charKnowledge == LCK.KNOWLEDGE_KNOWN then
     return true

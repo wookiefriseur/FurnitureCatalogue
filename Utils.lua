@@ -601,16 +601,13 @@ end
 local LCK = LibCharacterKnowledge
 local currentAccount = GetDisplayName()
 
---todo: fix /script d(FurC.Utils.GetBlueprintForItem("|H1:item:139184:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h"))
---/script d(GetItemLinkFurnitureDataId("|H1:item:139184:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h"))
--- /script d(GetFurnitureDataInfo(5135))
--- /script d(GetItemUniqueIdFromFurnitureId(5135))
-
---todo: it's not a list, it's a string
+---Get a list of characters that know how to craft given item
 ---Example: FurC.Utils.GetCrafterList("|H1:item:166781:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h")
+---@param itemLinkOrId string|number
+---@return table
 function this.GetCrafterList(itemLinkOrId)
   if nil == itemLinkOrId then
-    return ""
+    return {}
   end
 
   if type(itemLinkOrId) == "number" then
@@ -625,15 +622,22 @@ function this.GetCrafterList(itemLinkOrId)
     if char.account == currentAccount then
       if char.knowledge == LCK.KNOWLEDGE_KNOWN then
         table.insert(crafters, char.name)
-        ret = string.format("%s %s, ", ret, char.name)
       end
     end
   end
 
+  return crafters
+end
+
+function this.GenerateCrafterString(crafters)
   if #crafters == 0 then
     return GetString(SI_FURC_STRING_CANNOT_CRAFT)
   end
 
+  local ret = GetString(SI_FURC_STRING_CRAFTABLE_BY)
+  for _, crafter in ipairs(crafters) do
+    ret = string.format("%s %s, ", ret, crafter)
+  end
   return ret:sub(0, -3)
 end
 

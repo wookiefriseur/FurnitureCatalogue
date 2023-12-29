@@ -452,6 +452,8 @@ function FurCDevControl_HandleInventoryContextMenu(control)
       return
     end
     utils.MergeTable(item, this.GetStoreFurnishingInfo(storeEntryIndex))
+  else
+    return
   end
 
   addToCache(item)

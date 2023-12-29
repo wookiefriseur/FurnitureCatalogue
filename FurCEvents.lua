@@ -1,8 +1,6 @@
 FurC = FurC or {}
 local utils = FurC.Utils
 
-local em = EVENT_MANAGER
-
 local function onRecipeLearned(eventCode, recipeListIndex, recipeIndex)
   local itemlink = GetRecipeResultItemLink(recipeListIndex, recipeIndex, LINK_STYLE_BRACKETS)
   local info = zo_strformat(GetString(SI_FURC_STRING_RECIPELEARNED), itemlink, recipeListIndex, recipeIndex)
@@ -11,11 +9,9 @@ local function onRecipeLearned(eventCode, recipeListIndex, recipeIndex)
   FurC.UpdateGui()
 end
 
-local wm = WINDOW_MANAGER
-
 local function createIcon(control)
-  local icon
-  icon = wm:CreateControlFromVirtual(control:GetName() .. "FurCIcon", control, "FurC_SlotIconKnownYes")
+  local icon =
+    WINDOW_MANAGER:CreateControlFromVirtual(control:GetName() .. "FurCIcon", control, "FurC_SlotIconKnownYes")
   if FurC.settings["showIconOnLeft"] == nil or FurC.settings["showIconOnLeft"] == true then
     icon:SetAnchor(BOTTOMLEFT, control:GetNamedChild("Button"), BOTTOMLEFT, -15, -10)
   else
@@ -106,5 +102,5 @@ function FurC.SetupInventoryRecipeIcons(calledRecursively)
 end
 
 function FurC.RegisterEvents()
-  em:RegisterForEvent("FurnitureCatalogue", EVENT_RECIPE_LEARNED, onRecipeLearned)
+  EVENT_MANAGER:RegisterForEvent("FurnitureCatalogue", EVENT_RECIPE_LEARNED, onRecipeLearned)
 end

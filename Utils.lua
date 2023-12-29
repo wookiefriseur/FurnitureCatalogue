@@ -495,7 +495,7 @@ end
 -- GetItemLinkItemId
 -- GetItemLinkName
 -- IsItemLinkFurnitureRecipe
--- GetItemLinkRecipeResultItemLink
+-- GetItemLinkRecipeResultItemLink: recipe -> furnishing
 -- FURNITURE_THEME_TYPE_NORD
 -- GetNumFurnitureCategories
 -- GetFurnitureCategoryId(*luaindex* _categoryIndex_)
@@ -519,7 +519,7 @@ function this.GetBlueprintForItem(itemLink)
   if IsItemLinkFurnitureRecipe(itemLink) then
     return itemLink
   end
-  local blueprintId = FurC.DB[GetItemLinkItemId(itemLink)].blueprint
+  local blueprintId = FurC.settings.data[GetItemLinkItemId(itemLink)].blueprint
   return this.GetItemLink(blueprintId)
 end
 
@@ -602,6 +602,7 @@ local LCK = LibCharacterKnowledge
 local currentAccount = GetDisplayName()
 
 --todo: it's not a list, it's a string
+---Example: FurC.Utils.GetCrafterList("|H1:item:166781:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h")
 function this.GetCrafterList(itemLink)
   if nil == itemLink then
     return ""
@@ -627,7 +628,8 @@ end
 
 -- todo
 function this.IsAccountKnown(itemLinkOrId)
-  return #this.GetCrafterList(itemLinkOrId) > 0
+  local crafterList = this.GetCrafterList(itemLinkOrId)
+  return #crafterList > 0 and crafterList ~= GetString(SI_FURC_STRING_CANNOT_CRAFT)
 end
 
 ---Example: FurC.Utils.IsCharKnown("|H1:item:197569:4:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h")

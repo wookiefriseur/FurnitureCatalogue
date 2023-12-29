@@ -27,7 +27,7 @@ local function makeMaterial(recipeKey, recipeArray, tryPlaintext, forcePlaintext
     nil == recipeArray
     or (nil == recipeArray.blueprint and nil == recipeArray.recipeIndex and nil == recipeArray.recipeListIndex)
   then
-    return "couldn't get material list, please re-scan character knowledge"
+    return "couldn't get material list, please re-scan database"
   end
   local ret = ""
   local ingredients = FurC.GetIngredients(recipeKey, recipeArray)
@@ -91,6 +91,7 @@ local function parseFurnitureItem(itemLink, override) -- saves to DB, returns re
   return recipeArray
 end
 
+-- todo: change to some kind of import function
 local function parseBlueprint(blueprintLink) -- saves to DB, returns recipeArray
   local itemLink = GetItemLinkRecipeResultItemLink(blueprintLink, LINK_STYLE_BRACKETS)
   local blueprintId = getItemId(blueprintLink)
@@ -108,15 +109,6 @@ local function parseBlueprint(blueprintLink) -- saves to DB, returns recipeArray
   recipeArray.craftingSkill = recipeArray.craftingSkill or GetItemLinkCraftingSkillType(blueprintLink)
   recipeArray.blueprint = recipeArray.blueprint or getItemId(blueprintLink)
 
-  if IsItemLinkRecipeKnown(blueprintLink) then
-    local recipeChars = recipeArray.characters
-    if nil ~= recipeChars then
-      recipeChars[FurC.CharacterName] = true
-    else
-      recipeArray.characters = {}
-      recipeArray.characters[FurC.CharacterName] = true
-    end
-  end
   addDatabaseEntry(recipeKey, recipeArray)
   return recipeArray
 end
@@ -156,16 +148,6 @@ function FurC.Find(itemOrBlueprintLink)
   return recipeArray or {}
 end
 
-function FurC.Delete(itemOrBlueprintLink) -- sets recipeArray, returns it - calls scanItemLink
-  local recipeArray = FurC.Find(itemOrBlueprintLink)
-  if nil == recipeArray then
-    return
-  end
-  if nil ~= recipeArray.itemId then
-    FurC.settings.data[recipeArray.itemId] = nil
-  end
-end
-
 function FurC.IsFavorite(itemLink, recipeArray)
   recipeArray = recipeArray or FurC.Find(itemLink)
   return recipeArray.favorite
@@ -182,6 +164,7 @@ function FurC.Fave(itemLink, recipeArray)
   FurC.UpdateGui()
 end
 
+--todo: LCK already scans this, remove?
 --- @return table|nil
 local function scanRecipeIndices(recipeListIndex, recipeIndex)
   local itemLink = GetRecipeResultItemLink(recipeListIndex, recipeIndex, LINK_STYLE_BRACKETS)
@@ -196,14 +179,6 @@ local function scanRecipeIndices(recipeListIndex, recipeIndex)
   recipeArray.version = recipeArray.version or 2
   recipeArray.recipeListIndex = recipeArray.recipeListIndex or recipeListIndex
   recipeArray.recipeIndex = recipeArray.recipeIndex or recipeIndex
-
-  recipeArray.characters = recipeArray.characters or {}
-
-  if GetRecipeInfo(recipeListIndex, recipeIndex) then
-    recipeArray.characters[getCurrentChar()] = true
-    FurC.settings.accountCharacters = FurC.settings.accountCharacters or {}
-    FurC.settings.accountCharacters[getCurrentChar()] = FurC.settings.accountCharacters[getCurrentChar()] or true
-  end
 
   addDatabaseEntry(recipeKey, recipeArray)
   return recipeArray
@@ -226,6 +201,7 @@ function FurC.GetCraftingSkillType(recipeKey, recipeArray)
   return craftingSkillType
 end
 
+--todo: defer to LCK or don't scan at all?
 local function scanCharacter()
   local listName, numRecipes
   for recipeListIndex = 1, GetNumRecipeLists() do
@@ -238,9 +214,9 @@ local function scanCharacter()
 end
 FurC.ScanCharacter = scanCharacter
 
-local recipeArray
 local function scanFromFiles(shouldScanCharacter)
   local function parseZoneData(zoneName, zoneData, versionNumber, origin)
+    local recipeArray
     for vendorName, vendorData in pairs(zoneData) do
       for itemId, itemData in pairs(vendorData) do
         recipeArray = parseFurnitureItem(getItemLink(itemId), true)
@@ -304,6 +280,7 @@ local function scanFromFiles(shouldScanCharacter)
   end
 
   local function scanRolis()
+    local recipeArray
     for versionNumber, versionData in pairs(FurC.Rolis) do
       for itemId, itemSource in pairs(versionData) do
         recipeArray = parseFurnitureItem(getItemLink(itemId), true)
@@ -327,6 +304,7 @@ local function scanFromFiles(shouldScanCharacter)
   end
 
   local function scanFestivalFiles()
+    local recipeArray
     for versionNumber, versionData in pairs(FurC.EventItems) do
       for eventName, eventData in pairs(versionData) do
         for eventItemSource, eventItemData in pairs(eventData) do
@@ -343,6 +321,7 @@ local function scanFromFiles(shouldScanCharacter)
   end
 
   local function scanMiscItemFile()
+    local recipeArray
     for versionNumber, versionData in pairs(FurC.MiscItemSources) do
       for origin, originData in pairs(versionData) do
         for itemId, itemSource in pairs(originData) do
@@ -381,7 +360,7 @@ local function scanFromFiles(shouldScanCharacter)
 
     for versionNumber, vendorData in pairs(FurC.LuxuryFurnisher) do
       for itemId, itemData in pairs(vendorData) do
-        local recipeArray = {}
+        recipeArray = {}
 
         recipeArray.origin = src.LUXURY
         recipeArray.version = versionNumber
@@ -397,6 +376,7 @@ local function scanFromFiles(shouldScanCharacter)
   end
 
   local function scanRumours()
+    local recipeArray
     for versionNumber, items in pairs(FurC.Rumours) do
       for itemId, itemSource in pairs(items) do
         recipeArray = parseFurnitureItem(getItemLink(itemId), true)
@@ -425,6 +405,7 @@ local function scanFromFiles(shouldScanCharacter)
     end
   end
 
+  --todo: remove or maybe not (LCK scans already)
   local function scanCharacterOrMaybeNot()
     if shouldScanCharacter then
       scanCharacter()
@@ -465,16 +446,9 @@ local function getScanFromFiles()
   return FurC.settings.data == {}
 end
 
-local function getScanCharacter()
-  if nil == FurC.settings.accountCharacters[FurC.CharacterName] then
-    FurC.settings.accountCharacters[FurC.CharacterName] = false
-    return true
-  end
-end
-
+--todo: merge most scan/import functions into one
 function FurC.ScanRecipes(shouldScanFiles, shouldScanCharacter) -- returns database
   shouldScanFiles = shouldScanFiles or getScanFromFiles()
-  shouldScanCharacter = (shouldScanCharacter or getScanCharacter())
   if shouldScanFiles then
     FurC.Logger:Debug(GetString(SI_FURC_VERBOSE_SCANNING_DATA_FILE))
     scanFromFiles(shouldScanCharacter)

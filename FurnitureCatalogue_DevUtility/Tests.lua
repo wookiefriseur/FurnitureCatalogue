@@ -47,8 +47,7 @@ local function clearAll()
   FurC.SetFilterCraftingType(0) -- reset crafting
   FurC.SetFilterQuality(0) -- reset quality
 
-  -- Char, Source, Version off
-  setDropdownChoice("Character", 1) -- first entry is "Character filter: off"
+  -- Source, Version off
   setDropdownChoice("Source", FurC.Constants.ItemSources.NONE)
   setDropdownChoice("Version", FurC.Constants.Versioning.NONE)
 

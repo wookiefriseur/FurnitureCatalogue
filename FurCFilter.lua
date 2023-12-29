@@ -21,6 +21,8 @@ local recipeArray, itemId, itemLink, itemType, sItemType, recipeIndex, recipeLis
 local src = FurC.Constants.ItemSources
 local ver = FurC.Constants.Versioning
 
+local utils = FurC.Utils
+
 -- Local imports for performance
 local GetItemLinkName = GetItemLinkName
 local LocaleAwareToLower = LocaleAwareToLower
@@ -87,9 +89,11 @@ function FurC.InitFilters()
 end
 
 local function isRecipeArrayKnown()
-  if nil == recipeArray or nil == recipeArray.characters then
+  local known = utils.IsAccountKnown(recipeArray.itemLink)
+  if nil == recipeArray or not known then
     return
   end
+  --todo: per char or accountwide?
   if dropdownChoiceCharacter == 1 then
     for name, value in pairs(recipeArray.characters) do
       if value then

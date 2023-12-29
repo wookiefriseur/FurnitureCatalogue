@@ -14,10 +14,11 @@ function AddFurnitureShoppingListMenuEntry(itemId, calledFromFurC)
     if not FurC.GetEnableShoppingList() then
       return
     end
-    if (nil == moc()) or (nil == FurnitureShoppingListAdd) then
+    local control = moc()
+    if (nil == control) or (nil == FurnitureShoppingListAdd) then
       return
     end
-    if nil == moc():GetName():match("_ListItem_") then
+    if nil == control:GetName():match("_ListItem_") then
       return
     end
   end
@@ -62,11 +63,6 @@ local function postMaterial()
   FurC.ToChat(FurC.GetMats(cachedItemLink, cachedRecipeArray, true, true))
 end
 
-local function doNothing()
-  return
-end
-
-local S_DIVIDER = "-"
 local function addMenuItems(itemLink, recipeArray, hideSepBar)
   hideSepBar = hideSepBar or false
   recipeArray = recipeArray or FurC.Find(itemLink)
@@ -78,7 +74,8 @@ local function addMenuItems(itemLink, recipeArray, hideSepBar)
   cachedRecipeArray = recipeArray
 
   if not FurC.GetSkipDivider() and not hideSepBar then
-    AddCustomMenuItem(S_DIVIDER, doNothing, MENU_ADD_OPTION_LABEL)
+    local S_DIVIDER = "-"
+    AddCustomMenuItem(S_DIVIDER, nil, MENU_ADD_OPTION_LABEL)
   end
 
   AddCustomMenuItem(GetString(SI_FURC_MENU_HEADER), toChat, MENU_ADD_OPTION_LABEL)
@@ -123,7 +120,7 @@ function FurC_HandleClickEvent(itemLink, mButton, _, _, linkType, ...)
         addMenuItems(itemLink, FurC.Find(itemLink))
         ShowMenu()
         menuEventQueued = false
-      end)
+      end, 20)
     end
   end
 end

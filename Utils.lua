@@ -598,45 +598,53 @@ end
 
 -- CHARACTER KNOWLEDGE --
 
--- todo
-function this.IsAccountKnown(recipeKey, recipeArray)
-  if recipeKey == nil and recipeArray == nil then
-    return false
-  end
-  recipeArray = recipeArray or FurC.settings.data[recipeKey]
-  return not (nil == recipeArray or nil == recipeArray.characters or NonContiguousCount(recipeArray.characters) == 0)
+local LCK = LibCharacterKnowledge
+local currentAccount = GetDisplayName()
 
-  --[[
-  assert(false, "Not Yet Implemented")
-  if recipeKey == nil and recipeArray == nil then
-    return false
+--todo: it's not a list, it's a string
+function this.GetCrafterList(itemLink)
+  if nil == itemLink then
+    return ""
   end
-  recipeArray = recipeArray or FurC.settings.data[recipeKey]
-  return not (nil == recipeArray or nil == recipeArray.characters or NonContiguousCount(recipeArray.characters) == 0)
-  ]]
+
+  local crafters = {}
+  local ret = GetString(SI_FURC_STRING_CRAFTABLE_BY)
+  for _, char in ipairs(LCK.GetItemKnowledgeList(itemLink)) do
+    if char.account == currentAccount then
+      if char.knowledge == LCK.KNOWLEDGE_KNOWN then
+        table.insert(crafters, char.name)
+        ret = string.format("%s %s, ", ret, char.name)
+      end
+    end
+  end
+
+  if #crafters == 0 then
+    return GetString(SI_FURC_STRING_CANNOT_CRAFT)
+  end
+
+  return ret:sub(0, -3)
 end
 
 -- todo
-function this.CanCraft(recipeKey, recipeArray)
-  if recipeKey == nil and recipeArray == nil then
+function this.IsAccountKnown(itemLinkOrId)
+  return #this.GetCrafterList(itemLinkOrId) > 0
+end
+
+---Example: FurC.Utils.IsCharKnown("|H1:item:197569:4:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h")
+---Example: FurC.Utils.IsCharKnown("|H1:item:198529:4:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h")
+---@param itemLinkOrId string|number
+---@return boolean true if char knows item
+function this.IsCharKnown(itemLinkOrId)
+  if itemLinkOrId == nil then
     return false
   end
-  recipeArray = recipeArray or FurC.settings.data[recipeKey]
-  if this.IsAccountKnown(recipeKey, recipeArray) then
-    return recipeArray.characters[this.GetCurrentChar()]
+
+  local charKnowledge = LCK.GetItemKnowledgeForCharacter(itemLinkOrId)
+  if charKnowledge == LCK.KNOWLEDGE_KNOWN then
+    return true
   end
+
   return false
-  --[[
-  assert(false, "Not Yet Implemented")
-  if recipeKey == nil and recipeArray == nil then
-    return false
-  end
-  recipeArray = recipeArray or FurC.settings.data[recipeKey]
-  if this.IsAccountKnown(recipeKey, recipeArray) then
-    return recipeArray.characters[this.getCurrentChar()]
-  end
-  return false
-  ]]
 end
 
 -- make available for use and autocompletion

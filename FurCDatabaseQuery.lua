@@ -254,24 +254,3 @@ local strRRecipe = GetString(SI_FURC_SRC_RUMOUR_RECIPE)
 function FurC.getRumourSource(recipeKey, recipeArray)
   return (recipeArray.blueprint and strRRecipe) or strRItem
 end
-
-local strCantCraft = GetString(SI_FURC_STRING_CANNOT_CRAFT)
-local strCraftedBy = GetString(SI_FURC_STRING_CRAFTABLE_BY)
-function FurC.GetCrafterList(itemLink, recipeArray)
-  if nil == recipeArray and nil == itemLink then
-    return
-  end
-  recipeArray = recipeArray or FurC.Find(itemLink)
-  if nil == recipeArray then
-    return zo_strformat("FurC.GetCrafterList called for a non-craftable")
-  end
-
-  if nil == recipeArray.characters or NonContiguousCount(recipeArray.characters) == 0 then
-    return strCantCraft
-  end
-  local ret = strCraftedBy
-  for characterName, characterKnowledge in pairs(recipeArray.characters) do
-    ret = string.format("%s %s, ", ret, characterName)
-  end
-  return ret:sub(0, -3)
-end

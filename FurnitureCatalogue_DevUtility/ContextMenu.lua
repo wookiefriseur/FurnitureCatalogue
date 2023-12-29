@@ -381,7 +381,6 @@ function this.GetStoreFurnishingInfo(storeIndex)
     achievement = matchWithoutQuotes or string.match(achievement, ".+ %„(.+)%“.+")
     item.achievementId = this.GetAchievementId(achievement)
     item.achievementName = achievement
-    FurC.Logger:Debug("[%d] => '%s'", buyErrorStringId, achievement)
   end
 
   addToCache(item)
@@ -397,20 +396,13 @@ local function addMenuItems()
   AddCustomMenuItem(S_ADD_TO_BOX, addItemToTextbox, MENU_ADD_OPTION_LABEL)
 end
 
-function FurCDevControl_HandleClickEvent(itemLink, mouseButton, control)
-  currentItemLink = itemLink
-  if utils.IsFurniture(itemLink) then
-    local handled = LINK_HANDLER:FireCallbacks(
-      LINK_HANDLER.LINK_MOUSE_UP_EVENT,
-      itemLink,
-      mouseButton,
-      ZO_LinkHandler_ParseLink(itemLink)
-    )
-    if not handled then
-      FurC.Logger:Debug("Link handler not found for %s", itemLink)
-      return
-    end
-    addItemToTextbox(itemLink)
+function FurCDevControl_HandleClickEvent(itemLink, mButton, ctrl)
+  if mButton ~= MOUSE_BUTTON_INDEX_RIGHT then
+    return
+  end
+  currentItemLink = itemLink -- let the textbox know what item we clicked on
+  if not utils.IsFurniture(itemLink) then
+    return
   end
 end
 
@@ -429,9 +421,23 @@ function FurCDevControl_HandleInventoryContextMenu(control)
     or st == SLOT_TYPE_BANK_ITEM
     or st == SLOT_TYPE_GUILD_BANK_ITEM
     or st == SLOT_TYPE_TRADING_HOUSE_POST_ITEM
+    or st == SLOT_TYPE_LAUNDER
   then
     local bagId, slotId = ZO_Inventory_GetBagAndIndex(control)
     item.link = GetItemLink(bagId, slotId, LINK_STYLE_DEFAULT)
+
+    if not utils.IsFurniture(item.link) then
+      return
+    end
+
+    item.id = GetItemLinkItemId(item.link)
+    item.name = zo_strformat("<<1>>", GetItemLinkName(item.link))
+  elseif st == SLOT_TYPE_LOOT then
+    if not control.lootEntry or not control.lootEntry.lootId then
+      return
+    end
+    local lootId = control.lootEntry.lootId
+    item.link = GetLootItemLink(lootId, LINK_STYLE_DEFAULT)
 
     if not utils.IsFurniture(item.link) then
       return

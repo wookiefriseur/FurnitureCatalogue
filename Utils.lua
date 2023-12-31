@@ -37,6 +37,8 @@ end
 -- ruthlessly stolen from TextureIt
 -- ToDo: ZO_TableOrderingFunction
 -- ToDo: expect function instead of boolean "SortOrderUp"
+-- ToDo: make generic, not itemlink dependant
+--- Sorts table by given key
 --- @return table sortedTable
 function this.SortTable(tTable, sortKey, SortOrderUp)
   --[[
@@ -545,6 +547,7 @@ function this.GetItemId(itemLink)
   local _, _, _, itemId = ZO_LinkHandler_ParseLink(itemLink)
   return tonumber(itemId)
 end
+
 -- Alias for LibPrice
 ---@deprecated will be replaced by API function in the future
 ---@see FurC.Utils.GetItemId
@@ -629,6 +632,31 @@ function this.GetCrafterList(itemLinkOrId)
   return crafters
 end
 
+
+-- No Multi-Server lookup, so charName key is unique
+---@type table {["charName"]= {id: charId, account: @account, name: charName}}
+local accountChars = {}
+
+--- Get a table with known chars for current account
+---@return table charlist account
+function this.GetCharList()
+  if #accountChars > 0 then
+    return accountChars
+  end
+
+  local charList = LCK.GetCharacterList()
+  for _, char in ipairs(charList) do
+    if char.account == currentAccount then
+      accountChars[char.name] = char
+    end
+  end
+
+  return accountChars
+end
+
+--- Create a string with all crafters for given item
+---@param crafters any
+---@return string
 function this.GenerateCrafterString(crafters)
   if #crafters == 0 then
     return GetString(SI_FURC_STRING_CANNOT_CRAFT)

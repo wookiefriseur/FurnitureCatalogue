@@ -1,7 +1,7 @@
 ## Title: FurnitureCatalogue_Export
 ## Author: manavortex
 ## Version: 2.0.0
-## AddonVersion: 2000000
+## AddonVersion: 2002000
 ## APIVersion: 101042
 ## SavedVariables: FurnitureCatalogue_Export
 ## DependsOn: FurnitureCatalogue LibAddonMenu-2.0

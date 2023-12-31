@@ -16,7 +16,7 @@ local showAllOnTextSearch = false
 local showAllCrownOnTextSearch = false
 local showAllRumourOnTextSearch = false
 
-local recipeArray, itemId, itemLink, itemType, sItemType, recipeIndex, recipeListIndex
+local recipeArray, itemId, itemType, sItemType
 
 local src = FurC.Constants.ItemSources
 local ver = FurC.Constants.Versioning
@@ -68,7 +68,10 @@ function FurC.SetFilter(useDefaults, skipRefresh)
     return
   end
 
-  zo_callLater(FurC.UpdateLineVisibility, 200)
+  if FurC.GuiElements ~= nil then
+    zo_callLater(FurC.UpdateLineVisibility, 200)
+  end
+
 end
 
 function FurC.InitFilters()
@@ -90,12 +93,18 @@ end
 
 --todo: pass recipeArray or itemLink
 local function isRecipeArrayKnown()
-  if nil == recipeArray then
+  if nil == recipeArray or nil == recipeArray.itemLink then
     return false
   end
 
-  local accountKnown = utils.IsAccountKnown(recipeArray.itemLink)
-  return (accountwide and accountKnown) or utils.IsCharKnown(recipeArray.itemLink)
+  local itemLink = utils.GetBlueprintForItem(recipeArray.itemLink)
+
+  local ALL_CHARS = 1
+  if dropdownChoiceCharacter == ALL_CHARS then
+    return utils.IsAccountKnown(itemLink)
+  else
+    return utils.IsCharKnown(itemLink, ddTextCharacter)
+  end
 end
 
 -- Version: All, Homestead, Morrowind

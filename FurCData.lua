@@ -412,8 +412,6 @@ local function scanFromFiles(shouldScanCharacter)
     end
   end
 
-  FurC.IsLoading(true)
-
   if nil ~= task then
     task
       :Call(scanRecipeFile)

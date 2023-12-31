@@ -141,25 +141,23 @@ local function init(_, addOnName)
   this.Logger = this.getOrCreateLogger()
 
   this.CharacterName = utils.GetCurrentChar()
-
-  this.InitGui()
-
-  this.CreateTooltips()
-  this.InitRightclickMenu()
-
-  this.SetupInventoryRecipeIcons()
-
   local scanFiles = false
+  this.settings.databaseVersion = this.version
+
   if this.settings.version < this.version then
+    -- todo: react to major version changes by cleansing orphaned settings
+    --  check like: (verOld // 1e6)-(verNow // 1e6) < 0
     this.settings.version = this.version
     scanFiles = true
   end
 
   this.ScanRecipes(scanFiles, not this.GetSkipInitialScan())
-  this.settings.databaseVersion = this.version
-  SLASH_COMMANDS["/fur"] = FurnitureCatalogue_Toggle
-
   this.SetFilter(true)
+  this.CreateTooltips()
+  this.InitRightclickMenu()
+  this.SetupInventoryRecipeIcons()
+
+  SLASH_COMMANDS["/fur"] = FurnitureCatalogue_Toggle
 
   EVENT_MANAGER:UnregisterForEvent(this.name, EVENT_ADD_ON_LOADED)
   local timeEnd = GetGameTimeMilliseconds()

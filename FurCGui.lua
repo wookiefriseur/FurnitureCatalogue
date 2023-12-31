@@ -8,6 +8,7 @@ local otherTask = LibAsync:Create("FurnitureCatalogue_ToggleGui")
 local sortTable = FurC.Utils.SortTable
 local src = FurC.Constants.ItemSources
 local ver = FurC.Constants.Versioning
+local utils = FurC.Utils
 
 local function sort(myTable)
   local sortName, sortDirection = FurC.GetSortParams()
@@ -678,6 +679,9 @@ function FurC.UpdateHeader()
 end
 
 function FurnitureCatalogue_Toggle()
+  if not FurC.GuiElements then
+    FurC.InitGui()
+  end
   SCENE_MANAGER:ToggleTopLevel(FurCGui)
   if FurCGui:IsHidden() then
     return

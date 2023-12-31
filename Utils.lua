@@ -605,10 +605,10 @@ local LCK = LibCharacterKnowledge
 local currentAccount = GetDisplayName()
 
 ---Get a list of characters that know how to craft given item
----Example: FurC.Utils.GetCrafterList("|H1:item:166781:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h")
+---Example: FurC.Utils.GetCraftersFor("|H1:item:166781:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h")
 ---@param itemLinkOrId string|number
 ---@return table
-function this.GetCrafterList(itemLinkOrId)
+function this.GetCraftersFor(itemLinkOrId)
   if nil == itemLinkOrId then
     return {}
   end
@@ -669,23 +669,32 @@ function this.GenerateCrafterString(crafters)
   return ret:sub(0, -3)
 end
 
--- todo
+--- Check if any char knows how to craft given item
+---@param itemLinkOrId string|number
+---@return boolean
 function this.IsAccountKnown(itemLinkOrId)
-  local crafterList = this.GetCrafterList(itemLinkOrId)
+  local crafterList = this.GetCraftersFor(itemLinkOrId)
   return #crafterList > 0 and crafterList ~= GetString(SI_FURC_STRING_CANNOT_CRAFT)
 end
 
 ---Example: FurC.Utils.IsCharKnown("|H1:item:197569:4:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h")
 ---Example: FurC.Utils.IsCharKnown("|H1:item:198529:4:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h")
 ---@param itemLinkOrId string|number
+---@param charName string|nil
 ---@return boolean true if char knows item
-function this.IsCharKnown(itemLinkOrId)
+function this.IsCharKnown(itemLinkOrId, charName)
   if itemLinkOrId == nil then
     return false
   end
 
-  -- builtin: IsItemLinkRecipeKnown(itemLink)
-  local charKnowledge = LCK.GetItemKnowledgeForCharacter(itemLinkOrId)
+  local charKnowledge = LCK.KNOWLEDGE_UNKNOWN
+  if nil == charName then
+    charKnowledge = LCK.GetItemKnowledgeForCharacter(itemLinkOrId)
+  else
+    local lookupChar = this.GetCharList()[charName]
+    charKnowledge = LCK.GetItemKnowledgeForCharacter(itemLinkOrId, nil, lookupChar.id)
+  end
+
   if charKnowledge == LCK.KNOWLEDGE_KNOWN then
     return true
   end

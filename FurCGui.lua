@@ -157,6 +157,13 @@ FurC.DropdownData = {
     [ver.SCIONS] = GetString(SI_FURC_FILTER_VERSION_SCIONS_TT),
   },
 
+  ChoicesCharacter = {
+    [1] = GetString(SI_FURC_FILTER_CHAR_OFF),
+  },
+  TooltipsCharacter = {
+    [1] = GetString(SI_FURC_FILTER_CHAR_OFF_TT),
+  },
+
   -- will be set in setupSourceDropdown
   ChoicesSource = {},
   TooltipsSource = {},
@@ -373,7 +380,8 @@ function FurC.ApplyLineTemplate()
   local function resizeDropdowns(controlSize)
     local contRolist = {
       [1] = FurC_DropdownSource,
-      [2] = FurC_DropdownVersion,
+      [2] = FurC_DropdownCharacter,
+      [3] = FurC_DropdownVersion,
     }
     for _, control in pairs(contRolist) do
       control:SetWidth(controlSize)
@@ -394,7 +402,7 @@ function FurC.ApplyLineTemplate()
 
   FurC.SetLineHeight(true)
 
-  local minWidth = 2 * (FurC_DropdownVersion:GetWidth()) + FurC_TypeFilter:GetWidth() + 40
+  local minWidth = 2 * (FurC_DropdownCharacter:GetWidth()) + FurC_TypeFilter:GetWidth() + 40
   local minHeight = 2 * FurCGui_Header:GetHeight()
   FurCGui:SetDimensionConstraints(minWidth, minHeight)
 
@@ -600,6 +608,17 @@ local function createGui()
 
     comboBox:SetSortsItems(false)
 
+    if dropdownName == "Character" then
+      local sortedChars = utils.SortTable(utils.GetCharList(), "name", false)
+      for i, char in ipairs(sortedChars) do
+        table.insert(validChoices, char.name)
+        table.insert(
+          dropdownData["Tooltips" .. dropdownName],
+          zo_strformat(GetString(SI_FURC_STRING_RECIPESFORCHAR), char.name)
+        )
+      end
+    end
+
     for _, val in pairs(validChoices) do
       comboBox:AddItem(comboBox:CreateItemEntry(val, OnItemSelect))
       if val == FurC.GetDropdownChoiceTextual(dropdownName) then
@@ -617,6 +636,7 @@ local function createGui()
   createCraftingTypeFilters()
   createInventoryDropdown("Source")
   createInventoryDropdown("Version")
+  createInventoryDropdown("Character")
   FurC.ChangeTemplateFromButton(FurC.GetTinyUi())
   FurC.SetFontSize(FurC.GetFontSize())
   FurC.LoadFrameInfo()

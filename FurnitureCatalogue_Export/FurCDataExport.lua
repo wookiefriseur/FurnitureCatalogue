@@ -43,7 +43,7 @@ function this.Export()
     local exportArray = (known and exportKnown) or exportUnknown
     local mats = FurC.GetMats(itemLink, recipeArray, false, true)
     local knowledge = (
-      known and (utils.GenerateCrafterString(utils.GetCrafterList(itemLink)) .. ": "):gsub("Can be crafted by ", "")
+      known and (utils.GenerateCrafterString(utils.GetCraftersFor(itemLink)) .. ": "):gsub("Can be crafted by ", "")
     ) or ""
     local exportString = zo_strformat("<<1>><<2>>", knowledge, mats)
     exportArray[itemName] = exportString

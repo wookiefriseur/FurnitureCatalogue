@@ -1,13 +1,13 @@
 local searchString = ""
 local dropdownChoiceVersion = 1
+local dropdownTextVersion = "All"
 local ddSource = 1
 local dropdownTextSource = "All"
-local dropdownTextVersion = "All"
+local dropdownChoiceCharacter = 1
+local ddTextCharacter = "Accountwide"
 local qualityFilter = {}
 local craftingTypeFilter = {}
 
-local accountwide = true
-local accountwideText = "Accountwide"
 local hideBooks = false
 local hideRumours = false
 local hideCrownStore = false
@@ -37,10 +37,15 @@ function FurC.SetFilter(useDefaults, skipRefresh)
   if useDefaults then
     dropdownChoiceVersion = FurC.GetDefaultDropdownChoice("Version")
     ddSource = FurC.GetDefaultDropdownChoice("Source")
+    dropdownChoiceCharacter = FurC.GetDefaultDropdownChoice("Character")
   else
     dropdownChoiceVersion = FurC.GetDropdownChoice("Version")
     ddSource = FurC.GetDropdownChoice("Source")
+    dropdownChoiceCharacter = FurC.GetDropdownChoice("Character")
   end
+
+  -- we need to hold the text here, in case it's not "All"
+  ddTextCharacter = FurC.GetDropdownChoiceTextual("Character")
 
   qualityFilter = FurC.GetFilterQuality()
   craftingTypeFilter = FurC.GetFilterCraftingType()
@@ -54,7 +59,7 @@ function FurC.SetFilter(useDefaults, skipRefresh)
     and #searchString > 0
     and src.NONE == ddSource
     and ver.NONE == dropdownChoiceVersion
-    and 1 == accountwide
+    and 1 == dropdownChoiceCharacter
 
   showAllRumourOnTextSearch = showAllOnTextSearch and not FurC.GetFilterAllOnTextNoCrown()
   showAllCrownOnTextSearch = showAllOnTextSearch and not FurC.GetFilterAllOnTextNoCrown()
@@ -71,6 +76,11 @@ function FurC.InitFilters()
   FurC.SetFilterCraftingType(0)
   FurC.SetFilterQuality(0)
   FurC.SetDropdownChoice("Source", FurC.GetDefaultDropdownChoiceText("Source"), FurC.GetDefaultDropdownChoice("Source"))
+  FurC.SetDropdownChoice(
+    "Character",
+    FurC.GetDefaultDropdownChoiceText("Character"),
+    FurC.GetDefaultDropdownChoice("Character")
+  )
   FurC.SetDropdownChoice(
     "Version",
     FurC.GetDefaultDropdownChoiceText("Version"),

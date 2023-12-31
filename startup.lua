@@ -51,6 +51,7 @@ local defaults = {
 
   dropdownDefaults = {
     Source = 1,
+    Character = 1,
     Version = 1,
   },
 
@@ -59,9 +60,6 @@ local defaults = {
   coloredTooltips = true,
   dateFormat = "YYYY-MM-DD",
   hideKnowledge = false,
-
-  ---@type boolean Accountwide character knowledge
-  accountwide = true,
 
   hideBooks = true,
   hideDoubtfuls = true,

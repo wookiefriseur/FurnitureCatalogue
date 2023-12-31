@@ -13,6 +13,9 @@
           <AnchorFill />
         </Backdrop>
         <Button name="$(parent)_hide" inherits="ZO_ButtonBehaviorClickSound">
+          <OnMouseEnter>ZO_Tooltips_ShowTextTooltip(self, TOP, "Hide")
+          </OnMouseEnter>
+          <OnMouseExit>ZO_Tooltips_HideTextTooltip()</OnMouseExit>
           <OnClicked>FurCDev.ToggleEditBox()</OnClicked>
           <Dimensions x="30" y="30" />
           <Anchor point="TOPLEFT" relativeTo="$(parent)" relativePoint="TOPLEFT" offsetX="10"
@@ -24,6 +27,9 @@
           />
         </Button>
         <Button name="$(parent)_clear" inherits="ZO_ButtonBehaviorClickSound">
+          <OnMouseEnter>ZO_Tooltips_ShowTextTooltip(self, TOP, "Clear")
+          </OnMouseEnter>
+          <OnMouseExit>ZO_Tooltips_HideTextTooltip()</OnMouseExit>
           <OnClicked>FurCDev.clearControl()</OnClicked>
           <Dimensions x="40" y="40" />
           <Anchor point="TOPRIGHT" relativeTo="$(parent)" relativePoint="TOPRIGHT" offsetX="-10"
@@ -35,6 +41,9 @@
           />
         </Button>
         <Button name="$(parent)_fromTrader" inherits="ZO_ButtonBehaviorClickSound">
+          <OnMouseEnter>ZO_Tooltips_ShowTextTooltip(self, TOP, "Add all from trader")
+          </OnMouseEnter>
+          <OnMouseExit>ZO_Tooltips_HideTextTooltip()</OnMouseExit>
           <OnClicked>FurCDev.AddAllFromTrader()</OnClicked>
           <Dimensions x="40" y="40" />
           <Anchor point="RIGHT" relativeTo="$(parent)_clear" relativePoint="LEFT" offsetX="-10"
@@ -46,13 +55,15 @@
           />
         </Button>
         <EditBox name="$(parent)Box"
-          inherits="ZO_DefaultEditMultiLine ZO_DefaultEditForDarkBackdrop" editEnabled="false">
+          inherits="ZO_DefaultEditMultiLine ZO_DefaultEditForDarkBackdrop">
           <Anchor point="TOPLEFT" relativeTo="$(parent)" relativePoint="TOPLEFT" offsetX="50"
             offsetY="50" />
           <Anchor point="BOTTOMRIGHT" relativeTo="$(parent)" relativePoint="BOTTOMRIGHT"
             offsetX="-50" offsetY="-50" />
-          <OnFocusGained>FurCDev.selectEntireTextbox()</OnFocusGained>
+          <OnFocusGained>self:SelectAll()</OnFocusGained>
           <OnTextChanged>FurCDev.onTextboxTextChanged()</OnTextChanged>
+          <OnEnter></OnEnter>
+          <OnTab>self:InsertText("\t\t\t\t")</OnTab>
         </EditBox>
       </Controls>
     </TopLevelControl>

@@ -947,6 +947,10 @@ function GetDisplayName()
   return "@accountName"
 end
 
+---@class MAIL_INBOX
+---@field GetOpenMailId fun(self: MAIL_INBOX): id64
+MAIL_INBOX = {}
+
 -- UI Element overrides
 ---@class Control
 ---@field dataEntry table

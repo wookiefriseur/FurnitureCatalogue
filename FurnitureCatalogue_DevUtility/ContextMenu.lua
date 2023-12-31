@@ -30,19 +30,10 @@ end
 
 function this.clearControl()
   this.textbox:Clear()
-  this.CachedItems = nil
   this.CachedItems = {}
 end
 
-function this.selectEntireTextbox()
-  if this.control:IsHidden() then
-    return
-  end
-
-  local text = textbox:GetText() or ""
-  textbox:SetSelection(0, #text)
-end
-
+---Clear cache if textbox is emptied
 function this.onTextboxTextChanged()
   if this.control:IsHidden() then
     return
@@ -416,6 +407,8 @@ function FurCDevControl_HandleInventoryContextMenu(control)
     id = 0,
     name = "",
   }
+
+  --todo: put this in utils, as GetFurnitureDataFromControl(control)
   if
     st == SLOT_TYPE_ITEM
     or st == SLOT_TYPE_BANK_ITEM
@@ -424,20 +417,8 @@ function FurCDevControl_HandleInventoryContextMenu(control)
     or st == SLOT_TYPE_LAUNDER
   then
     local bagId, slotId = ZO_Inventory_GetBagAndIndex(control)
+    ---@type string itemLink
     item.link = GetItemLink(bagId, slotId, LINK_STYLE_DEFAULT)
-
-    if not utils.IsFurniture(item.link) then
-      return
-    end
-
-    item.id = GetItemLinkItemId(item.link)
-    item.name = zo_strformat("<<1>>", GetItemLinkName(item.link))
-  elseif st == SLOT_TYPE_LOOT then
-    if not control.lootEntry or not control.lootEntry.lootId then
-      return
-    end
-    local lootId = control.lootEntry.lootId
-    item.link = GetLootItemLink(lootId, LINK_STYLE_DEFAULT)
 
     if not utils.IsFurniture(item.link) then
       return
@@ -452,6 +433,42 @@ function FurCDevControl_HandleInventoryContextMenu(control)
       return
     end
     utils.MergeTable(item, this.GetStoreFurnishingInfo(storeEntryIndex))
+  elseif st == SLOT_TYPE_LOOT then
+    if not control.lootEntry or not control.lootEntry.lootId then
+      return
+    end
+    local lootId = control.lootEntry.lootId
+    item.link = GetLootItemLink(lootId, LINK_STYLE_DEFAULT)
+
+    if not utils.IsFurniture(item.link) then
+      return
+    end
+
+    item.id = GetItemLinkItemId(item.link)
+    item.name = zo_strformat("<<1>>", GetItemLinkName(item.link))
+  elseif st == SLOT_TYPE_MAIL_QUEUED_ATTACHMENT then
+    -- ZO_MailSendAttachmentsSlot1
+    local slotId = control.id or 1
+    item.link = GetMailQueuedAttachmentLink(slotId, LINK_STYLE_DEFAULT)
+
+    if not utils.IsFurniture(item.link) then
+      return
+    end
+
+    item.id = GetItemLinkItemId(item.link)
+    item.name = zo_strformat("<<1>>", GetItemLinkName(item.link))
+  elseif st == SLOT_TYPE_MAIL_ATTACHMENT then
+    -- ZO_MailInboxMessageAttachmentsSlot4
+    local mailid = MAIL_INBOX:GetOpenMailId()
+    local slotIndex = control.slotIndex or 1
+    item.link = GetAttachedItemLink(mailid, slotIndex, LINK_STYLE_DEFAULT)
+
+    if not utils.IsFurniture(item.link) then
+      return
+    end
+
+    item.id = GetItemLinkItemId(item.link)
+    item.name = zo_strformat("<<1>>", GetItemLinkName(item.link))
   else
     return
   end

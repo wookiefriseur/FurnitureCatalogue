@@ -338,7 +338,7 @@ local colours = {
 FurC.Constants.Colours = colours
 
 -- Old Constants as a fallback for other AddOns that use them
--- ToDo: required functionality will be moved to an API in the future
+-- TODO #API: required functionality will be moved to an API in the future
 
 -- fallback item sources
 

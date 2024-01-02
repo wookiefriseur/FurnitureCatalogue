@@ -83,7 +83,7 @@ function this.getOrCreateLogger()
   end -- return existing reference
 
   if not LibDebugLogger then
-    local function ignore(...) end -- black hole for most property calls, like logger:Debug
+    local function ignore(...) end -- black hole for most property calls, like logger:Debug, because the chat window is unsuited for the amount of text
     local function info(self, ...)
       local prefix = string.format("[%s]: ", this.tag)
       if tostring(...):find("%%") then
@@ -145,7 +145,7 @@ local function init(_, addOnName)
   this.settings.databaseVersion = this.version
 
   if this.settings.version < this.version then
-    -- todo: react to major version changes by cleansing orphaned settings
+    -- todo: react to major version changes by cleansing orphaned settings or just nuke from orbit with a full reset (settings = {} + reloadUi)?
     --  check like: (verOld // 1e6)-(verNow // 1e6) < 0
     this.settings.version = this.version
     scanFiles = true

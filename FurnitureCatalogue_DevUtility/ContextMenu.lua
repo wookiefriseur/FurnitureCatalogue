@@ -408,7 +408,7 @@ function FurCDevControl_HandleInventoryContextMenu(control)
     name = "",
   }
 
-  --todo: put this in utils, as GetFurnitureDataFromControl(control)
+  -- TODO #REFACTOR: put this in utils, as GetFurnitureDataFromControl(control)
   if
     st == SLOT_TYPE_ITEM
     or st == SLOT_TYPE_BANK_ITEM

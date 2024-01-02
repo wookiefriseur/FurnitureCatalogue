@@ -551,14 +551,14 @@ this.Profiler = {
   s5 = scenario_filter_all_items,
   s6 = scenario_caching_test,
 
-  -- ToDo: Benchmarks (do not use with profiler)
+  -- TODO #TESTS: Benchmarks (do not use with profiler)
   b1 = benchmark_init_db,
   b2 = benchmark_ui_search,
   b3 = benchmark_ui_filter,
   b4 = benchmark_query,
   b5 = benchmark_get_material,
 
-  -- ToDo: Tests
+  -- TODO #TESTS: Tests
   tests = run_test_suites,
 
   -- Utility

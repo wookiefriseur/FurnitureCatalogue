@@ -91,7 +91,7 @@ function FurC.InitFilters()
   )
 end
 
---todo: pass recipeArray or itemLink
+--TODO #REFACTOR: pass recipeArray or itemLink
 local function isRecipeArrayKnown()
   if nil == recipeArray or nil == recipeArray.itemLink then
     return false
@@ -127,7 +127,7 @@ local function matchSourceDropdown()
     return true
   end
   if src.FAVE == ddSource then
-    -- ToDo: store in favourites table for SV, not in database
+    -- TODO #DBOVERHAUL: store in favourites table for SV, not in database
     return recipeArray.favorite
   end
   if recipeArray.origin == src.CRAFTING then
@@ -150,6 +150,9 @@ local function matchSourceDropdown()
   return recipeArray.origin == ddSource
 end
 
+-- TODO #REFACTOR:
+--  - pass recipeArray or itemLink
+--  - support some fuzziness? (alternative is)
 local function matchSearchString()
   if #searchString == 0 then
     return true
@@ -220,6 +223,8 @@ function FurC.MatchFilter(currentItemId, currentRecipeArray)
   if not (matchVersionDropdown() and matchSourceDropdown()) then
     return false
   end
+
+  -- TODO #DBOVERHAUL: find a good way to filter rumour recipes that have confirmed furnishings but unconfirmed recipes
 
   if not (FurC.settings.filterCraftingTypeAll or matchCraftingTypeFilter()) then
     return false

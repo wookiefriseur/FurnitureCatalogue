@@ -3,7 +3,7 @@ local task = async:Create("FurnitureCatalogue_Tooltip")
 local src = FurC.Constants.ItemSources
 local utils = FurC.Utils
 
---todo: do or do not, there is no try
+--TODO #REFACTOR: do or do not, there is no try + move to utils?
 local function tryColorize(text)
   if not (text and FurC.GetColouredTooltips()) then
     return text

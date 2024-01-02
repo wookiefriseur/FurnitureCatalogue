@@ -10,7 +10,7 @@ function FurC.SetEnableDebug(value)
   FurC.Logger = FurC.getOrCreateLogger()
   if value then
     FurC.Logger:SetMinLevelOverride(FurC.Logger.LOG_LEVEL_DEBUG)
-    FurC.Logger:Info("Debug on")
+    FurC.Logger:Debug("Debug on")
   else
     FurC.Logger:SetMinLevelOverride(FurC.Logger.LOG_LEVEL_INFO)
   end
@@ -540,9 +540,8 @@ function FurC.SetListOffset(value)
 end
 
 function FurC.WipeDatabase()
-  d("resetting Furniture Catalogue data...")
+  FurC.Logger:Info("Reloading database...")
   FurC.settings.data = {}
-  FurC.settings.excelExport = {}
   FurC.ScanRecipes(true, true)
   FurC.Logger:Info("Scan complete")
 end

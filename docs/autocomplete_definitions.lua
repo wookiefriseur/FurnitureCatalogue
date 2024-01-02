@@ -971,7 +971,13 @@ FurC_OptionsPanelCombobox1 = {}
 ---@class FurCGui_ListHolder
 FurCGui_ListHolder = {}
 
---[[ ToDo: hstructure syntax support (low priority)
+--[[ TODO #DBOVERHAUL: test hstructure (and maybe add syntax support)
+  - hstructure syntax is not supported by regular lua language servers
+  - current data structure takes up around 200kb of memory, no great need to optimize
+  - load time is around ~10ms for core + <50ms for GUI, no great need to optimize
+  - whether data is generated in realtime or parsed from the database does not seem to make a big difference
+  - otherwise it might be worth it to pre populate a huge hstructure with all the data
+  - summed up: low priority
 
 hstructure PERSON
   name: string

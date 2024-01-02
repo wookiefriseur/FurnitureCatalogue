@@ -91,7 +91,7 @@ local function parseFurnitureItem(itemLink, override) -- saves to DB, returns re
   return recipeArray
 end
 
--- todo: change to some kind of import function
+-- TODO #REFACTOR: change to some kind of import function, move to parser or utils
 local function parseBlueprint(blueprintLink) -- saves to DB, returns recipeArray
   local itemLink = GetItemLinkRecipeResultItemLink(blueprintLink, LINK_STYLE_BRACKETS)
   local blueprintId = getItemId(blueprintLink)
@@ -153,7 +153,7 @@ function FurC.IsFavorite(itemLink, recipeArray)
   return recipeArray.favorite
 end
 
--- ToDo: move to fave reference table?
+-- TODO #DBOVERHAUL: move to fave reference table?
 function FurC.Fave(itemLink, recipeArray)
   recipeArray = recipeArray or FurC.Find(itemLink)
   recipeArray.favorite = not recipeArray.favorite
@@ -164,7 +164,7 @@ function FurC.Fave(itemLink, recipeArray)
   FurC.UpdateGui()
 end
 
---todo: LCK already scans this, remove?
+--TODO #REFACTOR: LCK already scans this, remove?
 --- @return table|nil
 local function scanRecipeIndices(recipeListIndex, recipeIndex)
   local itemLink = GetRecipeResultItemLink(recipeListIndex, recipeIndex, LINK_STYLE_BRACKETS)
@@ -201,7 +201,7 @@ function FurC.GetCraftingSkillType(recipeKey, recipeArray)
   return craftingSkillType
 end
 
---todo: defer to LCK or don't scan at all?
+--TODO #REFACTOR: defer to LCK or don't scan at all?
 local function scanCharacter()
   local listName, numRecipes
   for recipeListIndex = 1, GetNumRecipeLists() do
@@ -405,7 +405,7 @@ local function scanFromFiles(shouldScanCharacter)
     end
   end
 
-  --todo: remove or maybe not (LCK scans already)
+  --TODO #REFACTOR: remove or maybe not (LCK scans already)
   local function scanCharacterOrMaybeNot()
     if shouldScanCharacter then
       scanCharacter()
@@ -444,7 +444,7 @@ local function getScanFromFiles()
   return FurC.settings.data == {}
 end
 
---todo: merge most scan/import functions into one
+--TODO #REFACTOR: merge most scan/import functions into one
 function FurC.ScanRecipes(shouldScanFiles, shouldScanCharacter) -- returns database
   shouldScanFiles = shouldScanFiles or getScanFromFiles()
   if shouldScanFiles then

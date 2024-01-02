@@ -6,7 +6,7 @@ local this = {}
 
 local utils = FurC.Utils
 
--- TODO: some utility functions for furniture infos
+-- TODO #API: some utility functions for furniture infos
 
 ---Get the required achievement for a furnishing
 ---@param itemLink string
@@ -16,7 +16,7 @@ function this.GetAchievementForFurnishing(itemLink)
   return 0
 end
 
--- TODO: some LibPrice stuff
+-- TODO #API: some LibPrice stuff
 
 ---Get the furnishing materials
 ---@param itemLink string
@@ -61,7 +61,7 @@ local function costsFromId(id)
 end
 ]]
 
----Furniture Catalogue API for external use. You can treat this as a library.
+---Furniture Catalogue API for external use. You can treat this like a library.
 ---<p>You can use it like this:</p><ul>
 --- <li>local reference: <code>local libfur = LibFurCat</code> and then <code>libfur.SomeFunction()</code></li>
 --- <li>direct use: <code>LibFurCat.SomeFunction()</code></li>

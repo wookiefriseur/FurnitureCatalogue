@@ -35,9 +35,6 @@ function this.MergeTable(t1, t2)
 end
 
 -- ruthlessly stolen from TextureIt
--- ToDo: ZO_TableOrderingFunction
--- ToDo: expect function instead of boolean "SortOrderUp"
--- ToDo: make generic, not itemlink dependant
 --- Sorts table by given key
 --- @return table sortedTable
 function this.SortTable(tTable, sortKey, SortOrderUp)

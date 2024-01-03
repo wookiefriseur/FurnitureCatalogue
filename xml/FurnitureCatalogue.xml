@@ -26,9 +26,20 @@
               <!-- FurC_Header_Bar1's children -->
               <Controls>
                 <!-- FurC_Header_Bar1's children -->
-                <Button name="$(parent)_Feedback">
+                <Button name="$(parent)_Settings">
                   <Anchor point="TOPLEFT" relativeTo="$(parent)" relativePoint="TOPLEFT"
-                    offsetX="20" offsetY="10" />
+                    offsetX="10" offsetY="10" />
+                  <OnMouseEnter>FurC.GuiShowTooltip(self, "Open settings")</OnMouseEnter>
+                  <OnMouseExit>FurC.GuiHideTooltip(self)</OnMouseExit>
+                  <OnMouseUp>DoCommand("/furc")</OnMouseUp>
+                  <Dimensions x="40" y="40" />
+                  <Textures normal="esoui/art/skillsadvisor/advisor_tabicon_settings_up.dds"
+                    pressed="esoui/art/skillsadvisor/advisor_tabicon_settings_down.dds"
+                    mouseOver="esoui/art/skillsadvisor/advisor_tabicon_settings_over.dds" />
+                </Button>
+                <Button name="$(parent)_Feedback">
+                  <Anchor point="LEFT" relativeTo="$(parent)_Settings" relativePoint="RIGHT"
+                    offsetX="20" offsetY="0" />
                   <OnMouseEnter>FurC.GuiShowTooltip(self, "Click to say thank you:\nLeft: 2k\nRight: 10k\nMiddle: 25k\nYour feedback and/or donation is appreciated!")</OnMouseEnter>
                   <OnMouseExit>FurC.GuiHideTooltip(self)</OnMouseExit>
                   <OnMouseUp>FurC.Donate(self, button)</OnMouseUp>
@@ -65,44 +76,46 @@
                 </Control>
                 <Button name="$(parent)_Hide">
                   <Anchor point="TOPRIGHT" relativeTo="$(parent)" relativePoint="TOPRIGHT"
-                    offsetX="-15" offsetY="15" />
+                    offsetX="-10" offsetY="10" />
                   <OnMouseEnter>FurC.GuiShowTooltip(self, "Hide window")</OnMouseEnter>
                   <OnMouseExit>FurC.GuiHideTooltip(self)</OnMouseExit>
                   <OnMouseUp>FurnitureCatalogue_Toggle()</OnMouseUp>
-                  <Dimensions x="25" y="25" />
-                  <Textures normal="/esoui/art/buttons/decline_up.dds"
+                  <Dimensions x="40" y="40" />
+                  <Textures
+                    normal="/esoui/art/buttons/decline_up.dds"
                     pressed="/esoui/art/buttons/decline_down.dds"
-                    mouseOver="/esoui/art/buttons/decline_over.dds" />
+                    mouseOver="/esoui/art/buttons/decline_over.dds"
+                  />
                 </Button>
                 <Button name="$(parent)_Reload">
-                  <Anchor point="TOPRIGHT" relativeTo="$(parent)_Hide" relativePoint="TOPLEFT"
-                    offsetX="-25" offsetY="-5" />
+                  <Anchor point="RIGHT" relativeTo="$(parent)_Hide" relativePoint="LEFT"
+                    offsetX="-10" offsetY="0" />
                   <OnMouseEnter>FurC.GuiShowTooltip(self, "Click: Scan character knowledge to database\n\nRight-click: Re-scans data files\n\nMiddle-click: Re-create database (will ask you first)")</OnMouseEnter>
                   <OnMouseExit>FurC.GuiHideTooltip(self)</OnMouseExit>
                   <OnMouseUp>FurC.GUIButtonRefreshOnMouseUp(self, button)</OnMouseUp>
-                  <Dimensions x="35" y="35" />
+                  <Dimensions x="40" y="40" />
                   <Textures normal="/esoui/art/help/help_tabicon_feedback_up.dds"
                     pressed="/esoui/art/help/help_tabicon_feedback_down.dds "
                     mouseOver="/esoui/art/help/help_tabicon_feedback_over.dds" />
                 </Button>
                 <Button name="$(parent)_TemplateTiny">
-                  <Anchor point="TOPRIGHT" relativeTo="$(parent)_Reload" relativePoint="TOPLEFT"
-                    offsetX="-15" offsetY="-2" />
+                  <Anchor point="RIGHT" relativeTo="$(parent)_Reload" relativePoint="LEFT"
+                    offsetX="-10" offsetY="0" />
                   <OnMouseEnter>FurC.GuiShowTooltip(self, "change template")</OnMouseEnter>
                   <OnMouseExit>FurC.GuiHideTooltip(self)</OnMouseExit>
                   <OnMouseUp>FurC.ChangeTemplateFromButton(true)</OnMouseUp>
-                  <Dimensions x="35" y="35" />
+                  <Dimensions x="40" y="40" />
                   <Textures normal="/esoui/art/buttons/minus_up.dds"
                     pressed="/esoui/art/buttons/minus_down.dds"
                     mouseOver="/esoui/art/buttons/minus_over.dds" />
                 </Button>
                 <Button name="$(parent)_TemplateLarge" hidden="true">
-                  <Anchor point="TOPRIGHT" relativeTo="$(parent)_Reload" relativePoint="TOPLEFT"
-                    offsetX="-15" offsetY="-2" />
+                  <Anchor point="RIGHT" relativeTo="$(parent)_Reload" relativePoint="LEFT"
+                    offsetX="-10" offsetY="0" />
                   <OnMouseEnter>FurC.GuiShowTooltip(self, "change template")</OnMouseEnter>
                   <OnMouseExit>FurC.GuiHideTooltip(self)</OnMouseExit>
                   <OnMouseUp>FurC.ChangeTemplateFromButton(false)</OnMouseUp>
-                  <Dimensions x="35" y="35" />
+                  <Dimensions x="40" y="40" />
                   <Textures normal="/esoui/art/buttons/plus_up.dds"
                     pressed="/esoui/art/buttons/plus_down.dds"
                     mouseOver="/esoui/art/buttons/plus_over.dds" />

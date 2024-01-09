@@ -46,6 +46,12 @@ FurC.GetMats = makeMaterial
 function FurC.GetIngredients(itemLink, recipeArray)
   recipeArray = recipeArray or FurC.Find(itemLink)
   local ingredients = {}
+
+  -- If this check is missing, the function returns 1x fish. I have no idea why and refuse to investigate, because it's funny. Bug will probably go away once we stop working with global recipeArray.
+  if itemLink == nil or itemLink == "" then
+    return ingredients
+  end
+
   if {} ~= recipeArray and recipeArray.blueprint then
     local blueprintLink = getItemLink(recipeArray.blueprint)
     local numIngredients = GetItemLinkRecipeNumIngredients(blueprintLink)

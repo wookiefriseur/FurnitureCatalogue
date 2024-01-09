@@ -4,17 +4,17 @@ How to run scenarios:
 
 1. perform UI reload
 2. wait for 30-60 seconds in case some AddOns have delayed loading
-3. open profiler UI to see progress when it finishes
+3. ⏱️ open profiler UI already, so you will be able to see report generation progress
 4. call test from chat window like /script FurCDev.Profiler.s1()
-5. it opens FurC GUI, resets any filters and waits for 10 sec (hands off mouse and keyboard, also Game must have focus)
-6. after that preparation the profiling begins
-7. wait for EsoProfiler to generate the report
-8. export tracelog for Perfetto or use the ESOProfiler report viewer ingame
-9. or save log for later, like `cp '<SAVED_VARS>/ESOProfiler.lua' '<TARGET_DIR>/2023-01-23_furc_s1.lua'
+5. it runs GUI scenarios or unit tests (hands off mouse and keyboard, also Game must have focus)
+6. ⏱️ after that preparation the profiling begins
+7. ⏱️ wait for EsoProfiler to generate the report
+8. ⏱️ export tracelog for Perfetto or use the ESOProfiler report viewer ingame
+9. ⏱️ or save log for later, like `cp '<SAVED_VARS>/ESOProfiler.lua' '<TARGET_DIR>/2023-01-23_furc_s1.lua'
 
-Running benchmarks and tests is similar, just without the profiler parts.
+Running benchmarks and tests is similar, just without the ⏱️ profiler parts.
 
-## Cautions for Profiling and Benchmarks
+## Cautions for ⏱️ Profiling and Benchmarks
 
 To rule out most side effects and difficulties in the profiling results:
 
@@ -36,6 +36,7 @@ To rule out most side effects and difficulties in the profiling results:
 
 - mainly for regression tests
 - check if stuff still works like it should
+- run all tests with `/script FurCDev.Tests.suites.all()`
 - check [FurCDev/Tests.lua](../FurnitureCatalogue_DevUtility/Tests.lua#L9999) for implementation and call details
 
 

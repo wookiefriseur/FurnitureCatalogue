@@ -3,11 +3,27 @@
 
 local this = FurCDev
 
+-- PROFILER FUNCTIONS
+
 local function addTraceMarker(msg)
   RecordScriptProfilerUserEvent(msg)
 end
 
--- Helper Functions for Prerequisites
+local function startProfiler()
+  assert(ESO_PROFILER, "EsoProfiler not found")
+  StartScriptProfiler()
+end
+
+local function stopProfiler()
+  if nil ~= ESO_PROFILER then
+    StopScriptProfiler()
+    ESO_PROFILER:GenerateReport()
+    FurC.SetEnableDebug(true)
+    FurC.Logger:Debug("Done profiling, you can export from UI or ESO_PROFILER:Export()")
+  end
+end
+
+-- HELPER FUNCTIONS FOR UI AND SETTINGS
 
 local function disableDebug()
   FurC.SetEnableDebug(false)
@@ -24,18 +40,13 @@ local function setHideRumour(isHidden)
 end
 
 local function rescanDB()
-  -- recreate DB (M3)
+  -- recreate DB
   FurC.WipeDatabase()
 end
 
 local function rescanData()
-  -- rescan Data (M2)
+  -- rescan Data
   FurC.ScanRecipes(true, false)
-end
-
-local function rescanChar()
-  -- rescan char knowledge (M1)
-  FurC.ScanRecipes(false, true)
 end
 
 local function setDropdownChoice(category, choiceId)
@@ -55,27 +66,12 @@ local function clearAll()
   setHideRumour(true) -- hide rumours, ignoring user default setting
 end
 
-local function startProfiler()
-  assert(ESO_PROFILER, "EsoProfiler not found")
-  StartScriptProfiler()
-end
-
-local function stopProfiler()
-  if nil ~= ESO_PROFILER then
-    StopScriptProfiler()
-    ESO_PROFILER:GenerateReport()
-    FurC.SetEnableDebug(true)
-    FurC.Logger:Debug("Done profiling, you can export from UI or ESO_PROFILER:Export()")
-  end
-end
-
 ---Tries to emulate user typing into a text field.
 ---@param uiElement EditControl
 ---@param inputList table
 ---@param delay integer
 local function emulateUserInput(uiElement, inputList, delay)
   -- In case there are onFocus listeners
-
   uiElement:TakeFocus()
 
   -- Clear any existing text or selection
@@ -141,11 +137,6 @@ local function scenario_init_db()
       addTraceMarker(task.name .. ",rescanData")
       rescanData()
       suspendTask(task, delaySearch) -- wait for result list to catch up
-    end)
-    :Then(function() -- ~00:13
-      addTraceMarker(task.name .. ",rescanChar")
-      rescanChar()
-      suspendTask(task, 3 * delayUI) -- wait for char knowledge scan
     end)
     :Then(function() -- ~00:16
       FurnitureCatalogue_Toggle()
@@ -475,6 +466,8 @@ local function benchmark_get_material() end
 
 -- TESTS
 
+-- UNIT TESTS
+
 local function testsuite_utils_table()
   local function test_MergeTable()
     local mergeTable = FurC.Utils.MergeTable
@@ -525,46 +518,93 @@ local function testsuite_utils_furniture()
   test_isFurniture()
 end
 
-local function run_test_suites()
+-- API TESTS
+
+local function testsuite_api_achievements()
+  local result
+
+  result = LibFurCat.GetAchievementForFurnishing(134433)
+  assert(result.id == 1542, "Achievement ID should be 1542 for furniture ID")
+
+  result = LibFurCat.GetAchievementForFurnishing("|H1:item:134433:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h")
+  assert(result.id == 1542, "Achievement ID should be 1542 for furniture link")
+
+  result = LibFurCat.GetAchievementForFurnishing("nonsense")
+  assert(result.id == 0, "Invalid item should return achievement ID 0")
+end
+
+--TODO #TESTS
+local function testsuite_api_materials()
+  -- /script FurC.GetIngredients("|H1:item:119487:5:1:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0:0|h|h")
+  local result
+
+  result = LibFurCat.GetMaterialsForFurnishing(119487)
+  assert(#result == 5, "5 different materials expected for itemId 119487")
+
+  result = LibFurCat.GetMaterialsForFurnishing(119487)
+  assert(#result == 5, "5 different materials expected for itemLink for 119487")
+
+  result = LibFurCat.GetMaterialsForFurnishing("")
+  assert(#result == 0, "Empty item should return empty list")
+end
+
+local function run_all_test_suites()
   local tests = {
-    testsuite_utils_table,
-    testsuite_utils_string,
-    testsuite_utils_furniture,
+    ["utils:table"] = testsuite_utils_table,
+    ["utils:string"] = testsuite_utils_string,
+    ["utils:furniture"] = testsuite_utils_furniture,
+    ["api:achievements"] = testsuite_api_achievements,
+    ["api:materials"] = testsuite_api_materials,
   }
 
-  for i = 1, #tests do
-    local success, message = pcall(tests[i])
+  for name, fun in pairs(tests) do
+    local success, message = pcall(fun)
     if success then
-      FurC.Logger:Info("Testsuite #" .. i .. " passed")
+      FurC.Logger:Info("Passed: %s", name)
     else
-      FurC.Logger:Info("Testsuite #" .. i .. " failed: " .. message)
+      FurC.Logger:Info("Failed: %s\n%s", name, message)
     end
   end
 end
 
-this.Profiler = {
+this.Tests = {
   -- Scenarios (uses profiler)
-  s1 = scenario_init_db,
-  s2 = scenario_baseline_search,
-  s3 = scenario_search_all_items,
-  s4 = scenario_filter_base_items,
-  s5 = scenario_filter_all_items,
-  s6 = scenario_caching_test,
+  scenarios = {
+    s1 = scenario_init_db,
+    s2 = scenario_baseline_search,
+    s3 = scenario_search_all_items,
+    s4 = scenario_filter_base_items,
+    s5 = scenario_filter_all_items,
+    s6 = scenario_caching_test,
+  },
 
   -- TODO #TESTS: Benchmarks (do not use with profiler)
-  b1 = benchmark_init_db,
-  b2 = benchmark_ui_search,
-  b3 = benchmark_ui_filter,
-  b4 = benchmark_query,
-  b5 = benchmark_get_material,
+  benchmarks = {
+    b1 = benchmark_init_db,
+    b2 = benchmark_ui_search,
+    b3 = benchmark_ui_filter,
+    b4 = benchmark_query,
+    b5 = benchmark_get_material,
+  },
 
-  -- TODO #TESTS: Tests
-  tests = run_test_suites,
+  -- Regression Tests to make sure it still works
+  suites = {
+    all = run_all_test_suites,
+    utils = {
+      table = testsuite_utils_table,
+      string = testsuite_utils_string,
+      furniture = testsuite_utils_furniture,
+    },
+    api = {
+      achievements = testsuite_api_achievements,
+      materials = testsuite_api_materials,
+    },
+  },
 
   -- Utility
   info = function()
     local memCurrent = collectgarbage("count")
-    return string.format(
+    FurC.Logger:Info(
       "Startup: %03d ms, Memory: ~%0.f KB / %0.f KB\nCurrent total: %0.f KB (change: %0.f KB)",
       FurC.Metrics.startup,
       FurC.Metrics.memUsage,
@@ -572,5 +612,26 @@ this.Profiler = {
       memCurrent,
       memCurrent - FurC.Metrics.memTotal
     )
+  end,
+
+  help = function()
+    FurC.Logger:Info("Run it like FurCDev.Tests.suites.all() or FurCDev.Tests.suites.api()")
+    FurC.Logger:Info("Table structure:\n-----------------")
+    FurC.Logger:Info("FurCDev.Tests")
+    local function printTableInfo(tab, key, lvl)
+      lvl = lvl or 1
+      key = key or "*"
+      for k, v in pairs(tab) do
+        if type(v) == "function" then
+          FurC.Logger:Info("%" .. 4 * lvl .. "s%s()", ".", k)
+        elseif type(v) == "table" or type(v) == "userdata" then
+          FurC.Logger:Info("%" .. 4 * lvl .. "s%s", ".", k)
+          printTableInfo(v, k, lvl + 1)
+        else
+          FurC.Logger:Info("%" .. 4 * lvl .. "s%s: %s", " ", k or "", v or "")
+        end
+      end
+    end
+    printTableInfo(this.Tests)
   end,
 }

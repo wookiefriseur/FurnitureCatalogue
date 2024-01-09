@@ -111,6 +111,7 @@ end
 FurC.getPvpSource = getPvpSource
 
 -- TODO #REFACTOR: add info to item in DB and generate str from that. then use lookup by id
+-- TODO #DBOVERHAUL: move to different attribute on recipeArray, move vendors to DB-tables
 local function getAchievementVendorSource(recipeKey, recipeArray, stripColor)
   recipeArray = recipeArray or FurC.Find(recipeKey)
   if {} == recipeArray then

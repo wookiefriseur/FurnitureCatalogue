@@ -629,7 +629,6 @@ function this.GetCraftersFor(itemLinkOrId)
   return crafters
 end
 
-
 -- No Multi-Server lookup, so charName key is unique
 ---@type table {["charName"]= {id: charId, account: @account, name: charName}}
 local accountChars = {}

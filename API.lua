@@ -6,24 +6,44 @@ local this = {}
 
 local utils = FurC.Utils
 
--- TODO #API: some utility functions for furniture infos
-
 ---Get the required achievement for a furnishing
----@param itemLink string
----@return integer achievementId or 0
-function this.GetAchievementForFurnishing(itemLink)
-  assert(false, "Not Yet Implemented")
-  return 0
+---@param item string|number itemlink or ID
+---@return table achievementTable default values, if not found: {id=0, name="", link=""}
+function this.GetAchievementForFurnishing(item)
+  local achievement = { id = 0, name = "", link = "" }
+  item = utils.GetItemLink(item)
+
+  if item == "" then
+    return achievement
+  end
+
+  local itemId = utils.GetItemId(item)
+  local achStr = FurC.getAchievementVendorSource(itemId, nil, false)
+  achievement.link = string.match(achStr, "(|H0:achievement:%d+:%d+:%d+|h|h)") or ""
+  achievement.id = GetAchievementIdFromLink(achievement.link)
+  achievement.name = zo_strformat("<<1>>", GetAchievementName(achievement.id))
+
+  return achievement
 end
 
 -- TODO #API: some LibPrice stuff
 
 ---Get the furnishing materials
----@param itemLink string
----@return table [{matId = 123, amount = 2}, {...}]
-function this.GetMaterialsForFurnishing(itemLink)
-  assert(false, "Not Yet Implemented")
-  return {}
+---@param item string|number itemlink or ID
+---@return table { link = "some itemlink", qty = 123} or {}
+function this.GetMaterialsForFurnishing(item)
+  item = utils.GetItemLink(item)
+  local mats = {}
+
+  local itemId = utils.GetItemId(item)
+  for matLink, qty in pairs(FurC.GetIngredients(itemId)) do
+    table.insert(mats, {
+      link = matLink,
+      qty = qty,
+      id = GetItemLinkItemId(matLink),
+    })
+  end
+  return mats
 end
 
 local src = FurC.Constants.ItemSources

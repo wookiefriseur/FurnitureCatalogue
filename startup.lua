@@ -131,12 +131,12 @@ local function init(_, addOnName)
   if addOnName ~= this.name then
     return
   end
+  EVENT_MANAGER:UnregisterForEvent(this.name, EVENT_ADD_ON_LOADED)
 
   local timeStart = GetGameTimeMilliseconds()
   local memStart = collectgarbage("count")
 
   this.settings = ZO_SavedVars:NewAccountWide(this.name .. "_Settings", 2, nil, defaults)
-
   this.CreateSettings(this.settings, defaults)
   this.Logger = this.getOrCreateLogger()
 
@@ -159,7 +159,6 @@ local function init(_, addOnName)
 
   SLASH_COMMANDS["/fur"] = FurnitureCatalogue_Toggle
 
-  EVENT_MANAGER:UnregisterForEvent(this.name, EVENT_ADD_ON_LOADED)
   local timeEnd = GetGameTimeMilliseconds()
   local memEnd = collectgarbage("count")
   this.Metrics = { -- Some metrics for debugging/profiling
@@ -168,6 +167,7 @@ local function init(_, addOnName)
     memTotal = memEnd,
   }
   this.Logger:Debug(
+    -- Just an indicator, not precise
     "Startup: %03d ms, Memory: ~%0.f KB / %0.f KB",
     this.Metrics.startup,
     this.Metrics.memUsage,

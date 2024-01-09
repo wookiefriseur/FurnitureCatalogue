@@ -16,7 +16,7 @@ local showAllOnTextSearch = false
 local showAllCrownOnTextSearch = false
 local showAllRumourOnTextSearch = false
 
-local recipeArray, itemId, itemType, sItemType
+local recipeArray, itemId, itemLink, itemType, sItemType
 
 local src = FurC.Constants.ItemSources
 local ver = FurC.Constants.Versioning
@@ -71,7 +71,6 @@ function FurC.SetFilter(useDefaults, skipRefresh)
   if FurC.GuiElements ~= nil then
     zo_callLater(FurC.UpdateLineVisibility, 200)
   end
-
 end
 
 function FurC.InitFilters()

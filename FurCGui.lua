@@ -680,8 +680,21 @@ end
 
 function FurnitureCatalogue_Toggle()
   if not FurC.GuiElements then
+    local timeStart = GetGameTimeMilliseconds()
+    local memStart = collectgarbage("count")
+
     FurC.InitGui()
+
+    local timeEnd = GetGameTimeMilliseconds()
+    local memEnd = collectgarbage("count")
+    FurC.Logger:Debug(
+      "GUI loading: %03d ms, Memory: ~%0.f KB / %0.f KB",
+      timeEnd - timeStart,
+      memEnd - memStart,
+      memEnd
+    )
   end
+
   SCENE_MANAGER:ToggleTopLevel(FurCGui)
   if FurCGui:IsHidden() then
     return

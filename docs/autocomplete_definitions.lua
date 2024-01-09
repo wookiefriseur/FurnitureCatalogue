@@ -934,23 +934,6 @@ function StopScriptProfiler() end
 ---@param message string
 function RecordScriptProfilerUserEvent(message) end
 
----Deep copy a table
----@param source table
----@param dest table|nil
----@return table result
-function ZO_DeepTableCopy(source, dest)
-  return {}
-end
-
---- @return string displayName
-function GetDisplayName()
-  return "@accountName"
-end
-
----@class MAIL_INBOX
----@field GetOpenMailId fun(self: MAIL_INBOX): id64
-MAIL_INBOX = {}
-
 -- UI Element overrides
 ---@class Control
 ---@field dataEntry table

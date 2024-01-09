@@ -419,7 +419,6 @@ local function getDropdownIndex(dropdownName, value)
   return #dropdown
 end
 
-
 -- Source: All, All (craftable), Craftable (known), craftable (unknown), purchaseable
 -- Character: Accountwide, crafter1, crafter2...
 -- Version: All, Homestead, Morrowind
@@ -433,7 +432,11 @@ function FurC.SetDropdownChoice(dropdownName, textValue, dropdownIndex)
 
   -- if we're setting the dropdown menu "source" to "purchaseable", set "character" to "All"
   if dropdownName == "Source" then
-    if dropdownIndex > src.CRAFTING_UNKNOWN or dropdownIndex < src.CRAFTING then
+    if
+      dropdownIndex ~= src.CRAFTING_UNKNOWN
+      and dropdownIndex ~= src.CRAFTING_KNOWN
+      and dropdownIndex ~= src.CRAFTING
+    then
       FurC.DropdownChoices["Character"] = 1
       FurC_DropdownCharacter:GetNamedChild("SelectedItemText"):SetText(FurC.DropdownData.ChoicesCharacter[1])
     end

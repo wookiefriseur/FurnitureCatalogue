@@ -12,12 +12,12 @@ local getCurrentChar = utils.GetCurrentChar
 
 local function addDatabaseEntry(recipeKey, recipeArray)
   if recipeKey and recipeArray and {} ~= recipeArray then
-    if FurC.settings.data[recipeKey] ~= nil then
+    if FurC.DB[recipeKey] ~= nil then
       for k, v in pairs(recipeArray) do
-        FurC.settings.data[recipeKey][k] = v
+        FurC.DB[recipeKey][k] = v
       end
     else
-      FurC.settings.data[recipeKey] = recipeArray
+      FurC.DB[recipeKey] = recipeArray
     end
   end
 end
@@ -85,7 +85,7 @@ local function parseFurnitureItem(itemLink, override) -- saves to DB, returns re
   end
 
   local recipeKey = GetItemLinkItemId(itemLink)
-  local recipeArray = FurC.settings.data[recipeKey]
+  local recipeArray = FurC.DB[recipeKey]
   if nil ~= recipeArray then
     return recipeArray
   end
@@ -110,7 +110,7 @@ local function parseBlueprint(blueprintLink) -- saves to DB, returns recipeArray
     return
   end
 
-  local recipeArray = FurC.settings.data[recipeKey] or {}
+  local recipeArray = FurC.DB[recipeKey] or {}
   recipeArray.origin = recipeArray.origin or src.CRAFTING
   recipeArray.craftingSkill = recipeArray.craftingSkill or GetItemLinkCraftingSkillType(blueprintLink)
   recipeArray.blueprint = recipeArray.blueprint or getItemId(blueprintLink)
@@ -146,25 +146,27 @@ function FurC.Find(itemOrBlueprintLink)
     recipeArray = parseFurnitureItem(itemOrBlueprintLink)
   else
     local itemId = getItemId(itemOrBlueprintLink)
-    if itemId ~= nil and tonumber(itemId) > 0 and FurC.settings.data ~= nil then
-      recipeArray = FurC.settings.data[itemId]
+    if itemId ~= nil and tonumber(itemId) > 0 and FurC.DB ~= nil then
+      recipeArray = FurC.DB[itemId]
     end
   end
 
   return recipeArray or {}
 end
 
-function FurC.IsFavorite(itemLink, recipeArray)
-  recipeArray = recipeArray or FurC.Find(itemLink)
-  return recipeArray.favorite
+function FurC.IsFavorite(itemId)
+  if itemId == nil or tonumber(itemId) == 0 then
+    return false
+  end
+
+  return FurC.settings.favourites[itemId] or false
 end
 
--- TODO #DBOVERHAUL: move to fave reference table?
-function FurC.Fave(itemLink, recipeArray)
-  recipeArray = recipeArray or FurC.Find(itemLink)
-  recipeArray.favorite = not recipeArray.favorite
-  if not recipeArray.favorite then
-    recipeArray.favorite = nil
+function FurC.Fave(itemId)
+  FurC.settings.favourites[itemId] = not FurC.settings.favourites[itemId]
+
+  if not FurC.settings.favourites[itemId] then
+    FurC.settings.favourites[itemId] = nil
   end
 
   FurC.UpdateGui()
@@ -180,7 +182,7 @@ local function scanRecipeIndices(recipeListIndex, recipeIndex)
 
   local recipeKey = getItemId(itemLink)
 
-  local recipeArray = FurC.settings.data[recipeKey] or {}
+  local recipeArray = FurC.DB[recipeKey] or {}
   recipeArray.origin = src.CRAFTING
   recipeArray.version = recipeArray.version or 2
   recipeArray.recipeListIndex = recipeArray.recipeListIndex or recipeListIndex
@@ -447,12 +449,14 @@ local function getScanFromFiles()
     return true
   end
 
-  return FurC.settings.data == {}
+  return FurC.DB == {}
 end
 
 --TODO #REFACTOR: merge most scan/import functions into one
 function FurC.ScanRecipes(shouldScanFiles, shouldScanCharacter) -- returns database
   shouldScanFiles = shouldScanFiles or getScanFromFiles()
+
+  FurC.Logger:Debug("ScanRecipes (scanFiles=%s, scanChar=%s)", tostring(shouldScanFiles), tostring(shouldScanCharacter))
   if shouldScanFiles then
     FurC.Logger:Debug(GetString(SI_FURC_VERBOSE_SCANNING_DATA_FILE))
     scanFromFiles(shouldScanCharacter)
@@ -505,7 +509,7 @@ function FurC.ShouldBeInFurC(link)
   end
 
   if IsItemLinkPlaceableFurniture(link) then
-    return nil == FurC.settings.data[getItemId(link)]
+    return nil == FurC.DB[getItemId(link)]
   end
 
   -- if not IsItemLinkFurnitureRecipe(link) then	return false end
@@ -540,5 +544,5 @@ function FurC.ShouldBeInFurC(link)
   end
 
   -- yeah okay, it should actually return false, but this is a util function for datamining
-  return nil == FurC.settings.data[resultId]
+  return nil == FurC.DB[resultId]
 end

@@ -518,7 +518,7 @@ function this.GetBlueprintForItem(itemLink)
   if IsItemLinkFurnitureRecipe(itemLink) then
     return itemLink
   end
-  local blueprintId = FurC.settings.data[GetItemLinkItemId(itemLink)].blueprint
+  local blueprintId = FurC.DB[GetItemLinkItemId(itemLink)].blueprint
   return this.GetItemLink(blueprintId)
 end
 

@@ -544,7 +544,7 @@ end
 
 function FurC.WipeDatabase()
   FurC.Logger:Info("Reloading database...")
-  FurC.settings.data = {}
+  FurC.DB = {}
   FurC.ScanRecipes(true, true)
   FurC.Logger:Info("Scan complete")
 end

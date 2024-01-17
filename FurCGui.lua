@@ -228,7 +228,8 @@ local function updateLineVisibility()
       curLine.icon:SetTexture(GetItemLinkIcon(curData.itemLink))
       curLine.icon:SetAlpha(1)
       local text = string.gsub(curData.itemLink, "H1", "H0")
-      curLine.text:SetText(((curData.favorite and "* ") or "") .. text)
+      local isFav = FurC.IsFavorite(curData.itemId)
+      curLine.text:SetText(((isFav and "* ") or "") .. text)
       local mats = FurC.GetItemDescription(curData.itemId, curData)
       curLine.mats:SetText(mats)
     end
@@ -286,7 +287,7 @@ end
 local function updateScrollDataLinesData()
   local dataLines = {}
   local function filterData()
-    for itemId, recipeArray in pairs(FurC.settings.data) do
+    for itemId, recipeArray in pairs(FurC.DB) do
       if FurC.MatchFilter(itemId, recipeArray) then
         local itemLink = FurC.Utils.GetItemLink(itemId)
         if itemLink then
@@ -320,6 +321,7 @@ local function startLoading()
   FurC.IsLoading(true)
   local text = FurC_SearchBox:GetText()
   FurC.LastFilter = cachedDefaults
+  FurC.Logger:Verbose("startLoading: text=%s, LastFilter=%s", tostring(text), tostring(FurC.LastFilter))
   FurC.SetFilter(cachedDefaults, true)
 end
 local function stopLoading()
@@ -335,6 +337,7 @@ function FurC.UpdateGui(useDefaults)
     return
   end
   cachedDefaults = useDefaults
+  FurC.Logger:Verbose("UpdateGui (useDefaults=%s)", tostring(useDefaults))
 
   if nil ~= otherTask then
     otherTask:Call(startLoading):Then(updateScrollDataLinesData):Then(stopLoadingWithDelay)
@@ -424,7 +427,7 @@ end
 
 local function createGui()
   local function createInventoryScroll()
-    FurC.Logger:Debug("CreateInventoryScroll")
+    FurC.Logger:Verbose("CreateInventoryScroll")
 
     local function createLine(i, predecessor)
       predecessor = predecessor or FurCGui_ListHolder

@@ -69,7 +69,7 @@ end
 function FurC.FindByName(namePart)
   local ret = {}
   local itemName = ""
-  FurC.Logger:Debug("Looking for %s... ", namePart)
+  FurC.Logger:Verbose("Looking for %s... ", namePart)
   for itemId, recipeArray in pairs(FurC.settings["data"]) do
     local m = string.match(string.lower(getNameFromEntry(recipeArray)), string.lower(namePart))
     FurC.Logger:Verbose("%s: %s (%s)", recipeArray.itemId, getNameFromEntry(recipeArray), m, string.lower(namePart))

@@ -31,6 +31,8 @@ local match = string.match
 local getItemLink = FurC.Utils.GetItemLink
 
 function FurC.SetFilter(useDefaults, skipRefresh)
+  FurC.Logger:Verbose("SetFilter (useDefaults=%s, skipRefresh=%s)", tostring(useDefaults), tostring(skipRefresh))
+
   ClearTooltip(InformationTooltip)
   searchString = FurC.GetSearchFilter()
 
@@ -74,7 +76,7 @@ function FurC.SetFilter(useDefaults, skipRefresh)
 end
 
 function FurC.InitFilters()
-  FurC.Logger:Debug("Init Filters")
+  FurC.Logger:Verbose("Init Filters")
   FurC.SetFilterCraftingType(0)
   FurC.SetFilterQuality(0)
   FurC.SetDropdownChoice("Source", FurC.GetDefaultDropdownChoiceText("Source"), FurC.GetDefaultDropdownChoice("Source"))
@@ -126,8 +128,7 @@ local function matchSourceDropdown()
     return true
   end
   if src.FAVE == ddSource then
-    -- TODO #DBOVERHAUL: store in favourites table for SV, not in database
-    return recipeArray.favorite
+    return FurC.settings.favourites[itemId]
   end
   if recipeArray.origin == src.CRAFTING then
     if ddSource == src.CRAFTING then

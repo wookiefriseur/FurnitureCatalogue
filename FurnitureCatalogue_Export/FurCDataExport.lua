@@ -20,13 +20,13 @@ local function getSortTable(tbl)
 end
 
 function this.Dump()
-  this.settings = FurC.settings.data
+  this.settings = FurC.DB
   ReloadUI("ingame")
 end
 
 function this.Export()
   local itemNames = {}
-  for itemId, recipeArray in pairs(FurC.settings.data) do
+  for itemId, recipeArray in pairs(FurC.DB) do
     if recipeArray.origin == src.CRAFTING then
       itemNames[GetItemLinkName(utils.GetItemLink(itemId))] = utils.GetItemLink(itemId)
     end

@@ -49,13 +49,14 @@ local function toChat()
   FurC.ToChat(cachedItemLink)
 end
 local function fave()
-  FurC.Fave(cachedItemLink)
+  local itemId = GetItemLinkItemId(cachedItemLink)
+  FurC.Fave(itemId)
 end
 local function postItemSource()
   FurC.ToChat(FurC.GetItemDescription(cachedItemLink, cachedRecipeArray, true))
 end
 local function postRecipe()
-  FurC.ToChat(FurC.Utils.GetItemLink(cachedRecipeArray.blueprint))
+  FurC.ToChat(utils.GetItemLink(cachedRecipeArray.blueprint))
 end
 local function postRecipeResult()
   FurC.ToChat(GetItemLinkRecipeResultItemLink(cachedItemLink))
@@ -73,6 +74,7 @@ local function addMenuItems(itemLink, recipeArray, hideSepBar)
 
   cachedItemLink = itemLink
   cachedRecipeArray = recipeArray
+  local itemId = GetItemLinkItemId(cachedItemLink)
 
   if not FurC.GetSkipDivider() and not hideSepBar then
     local S_DIVIDER = "-"
@@ -81,8 +83,7 @@ local function addMenuItems(itemLink, recipeArray, hideSepBar)
 
   AddCustomMenuItem(GetString(SI_FURC_MENU_HEADER), toChat, MENU_ADD_OPTION_LABEL)
 
-  local faveText = FurC.IsFavorite(itemLink, recipeArray) and GetString(SI_FURC_REMOVE_FAVE)
-    or GetString(SI_FURC_ADD_FAVE)
+  local faveText = (FurC.IsFavorite(itemId) and GetString(SI_FURC_REMOVE_FAVE)) or GetString(SI_FURC_ADD_FAVE)
   AddCustomMenuItem(faveText, fave, MENU_ADD_OPTION_LABEL)
 
   local isRecipe = IsItemLinkFurnitureRecipe(itemLink)
@@ -198,6 +199,7 @@ function FurC.OnControlMouseUp(control, button)
 end
 
 function FurC.InitRightclickMenu()
+  FurC.Logger:Verbose("InitRightclickMenu)")
   LINK_HANDLER:RegisterCallback(LINK_HANDLER.LINK_MOUSE_UP_EVENT, FurC_HandleClickEvent)
   ZO_PreHook("ZO_InventorySlot_ShowContextMenu", function(rowControl)
     FurC_HandleInventoryContextMenu(rowControl)

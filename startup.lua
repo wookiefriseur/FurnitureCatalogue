@@ -12,6 +12,9 @@ this.CharacterName = nil
 this.website = "https://www.esoui.com/downloads/fileinfo.php?id=1617"
 this.settings = {}
 
+---DB containing all furniture items
+this.DB = {}
+
 local src = this.Constants.ItemSources
 local ver = this.Constants.Versioning
 
@@ -33,9 +36,10 @@ local defaults = {
   dontScanTradingHouse = false,
   enableDebug = false,
 
-  data = {},
   filterCraftingType = {},
   filterQuality = {},
+
+  favourites = {},
 
   resetDropdownChoice = false,
   useTinyUi = true,
@@ -119,12 +123,36 @@ function this.getOrCreateLogger()
 
   -- set initial log level
   if this.settings.enableDebug then
-    logger:SetMinLevelOverride(logger.LOG_LEVEL_DEBUG)
+    logger:SetMinLevelOverride(logger.LOG_LEVEL_VERBOSE)
   else
     logger:SetMinLevelOverride(logger.LOG_LEVEL_INFO)
   end
 
   return logger
+end
+
+local function migrateData()
+  local data = this.settings.data
+  -- Check if old DB is present
+  if not data or next(data) == nil then
+    return
+  end
+  this.Logger:Info("Migrating data from old format. Delete the saved variables file if this keeps happening.")
+  this.settings.favourites = this.settings.favourites or {}
+
+  local numFound = 0
+  local numOldFavs = #this.settings.favourites
+  for k, v in pairs(data) do
+    if v.favorite then
+      numFound = numFound + 1
+      FurC.Fave(k)
+    end
+  end
+
+  local numTotalFavs = NonContiguousCount(this.settings.favourites)
+  this.Logger:Info("Found %d favourites, imported %d new ones", numFound, numTotalFavs - numOldFavs)
+
+  --this.settings.data = nil
 end
 
 local function init(_, addOnName)
@@ -173,6 +201,8 @@ local function init(_, addOnName)
     this.Metrics.memUsage,
     this.Metrics.memTotal
   )
+
+  migrateData()
 end
 
 ZO_CreateStringId("SI_BINDING_NAME_TOGGLE_FURNITURE_CATALOGUE", "Toggle main window")

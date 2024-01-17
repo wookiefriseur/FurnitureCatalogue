@@ -100,28 +100,27 @@ local function ReturnItemLink(itemLink)
   return FurC.Utils.GetItemLink(itemLink)
 end
 
-do
-  local identifier = FurC.name .. "Tooltips"
-  -- hook real late
-  local function HookToolTips()
-    EVENT_MANAGER:UnregisterForUpdate(identifier)
-    TooltipHook(ItemTooltip, "SetBagItem", GetItemLink)
-    TooltipHook(ItemTooltip, "SetTradeItem", GetTradeItemLink)
-    TooltipHook(ItemTooltip, "SetBuybackItem", GetBuybackItemLink)
-    TooltipHook(ItemTooltip, "SetStoreItem", GetStoreItemLink)
-    TooltipHook(ItemTooltip, "SetAttachedMailItem", GetAttachedItemLink)
-    TooltipHook(ItemTooltip, "SetLootItem", GetLootItemLink)
-    TooltipHook(ItemTooltip, "SetTradingHouseItem", GetTradingHouseSearchResultItemLink)
-    TooltipHook(ItemTooltip, "SetTradingHouseListing", GetTradingHouseListingItemLink)
-    TooltipHook(ItemTooltip, "SetLink", ReturnItemLink)
-    TooltipHook(PopupTooltip, "SetLink", ReturnItemLink)
-  end
-  -- hook late
-  local function DeferHookToolTips()
-    EVENT_MANAGER:UnregisterForEvent(identifier, EVENT_PLAYER_ACTIVATED)
-    EVENT_MANAGER:RegisterForUpdate(identifier, 100, HookToolTips)
-  end
-  function FurC.CreateTooltips()
-    EVENT_MANAGER:RegisterForEvent(identifier, EVENT_PLAYER_ACTIVATED, DeferHookToolTips)
-  end
+local identifier = FurC.name .. "Tooltips"
+-- hook real late
+local function HookToolTips()
+  EVENT_MANAGER:UnregisterForUpdate(identifier)
+  TooltipHook(ItemTooltip, "SetBagItem", GetItemLink)
+  TooltipHook(ItemTooltip, "SetTradeItem", GetTradeItemLink)
+  TooltipHook(ItemTooltip, "SetBuybackItem", GetBuybackItemLink)
+  TooltipHook(ItemTooltip, "SetStoreItem", GetStoreItemLink)
+  TooltipHook(ItemTooltip, "SetAttachedMailItem", GetAttachedItemLink)
+  TooltipHook(ItemTooltip, "SetLootItem", GetLootItemLink)
+  TooltipHook(ItemTooltip, "SetTradingHouseItem", GetTradingHouseSearchResultItemLink)
+  TooltipHook(ItemTooltip, "SetTradingHouseListing", GetTradingHouseListingItemLink)
+  TooltipHook(ItemTooltip, "SetLink", ReturnItemLink)
+  TooltipHook(PopupTooltip, "SetLink", ReturnItemLink)
+end
+-- hook late
+local function DeferHookToolTips()
+  EVENT_MANAGER:UnregisterForEvent(identifier, EVENT_PLAYER_ACTIVATED)
+  EVENT_MANAGER:RegisterForUpdate(identifier, 100, HookToolTips)
+end
+function FurC.CreateTooltips()
+  FurC.Logger:Verbose("CreateTooltips")
+  EVENT_MANAGER:RegisterForEvent(identifier, EVENT_PLAYER_ACTIVATED, DeferHookToolTips)
 end

@@ -65,6 +65,8 @@ local function updateItemInInventory(control)
 end
 
 function FurC.SetupInventoryRecipeIcons(calledRecursively)
+  FurC.Logger:Verbose("SetupInventoryRecipeIcons (calledRecursively=%s)", tostring(calledRecursively))
+
   local function isValidBag(bagId, inventory)
     if bagId == BAG_WORN then
       return false

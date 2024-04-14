@@ -152,7 +152,7 @@ local function migrateData()
   local numTotalFavs = NonContiguousCount(this.settings.favourites)
   this.Logger:Info("Found %d favourites, imported %d new ones", numFound, numTotalFavs - numOldFavs)
 
-  --this.settings.data = nil
+  this.settings.data = nil
 end
 
 local function init(_, addOnName)

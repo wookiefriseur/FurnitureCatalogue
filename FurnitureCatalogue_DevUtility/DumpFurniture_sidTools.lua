@@ -70,6 +70,15 @@ local function dumpFurniture()
     sidTools_SaveData.furniture[itemId] = nil
   end
 
+  logger:Info(
+    zo_strformat(
+      "Scanned items: <<1>>, New furnishings: <<2>>, New recipes: <<3>>",
+      #masterList,
+      NonContiguousCount(sidTools_SaveData.furniture),
+      NonContiguousCount(sidTools_SaveData.furnitureRecipes)
+    )
+  )
+
   if LAM and LAM.util then
     LAM.util.ShowConfirmationDialog("Reload UI?", "You need to write sidTools' saved variables to disk.", function()
       ReloadUI("ingame")

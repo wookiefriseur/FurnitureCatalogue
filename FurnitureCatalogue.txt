@@ -4,8 +4,8 @@
 ## Version: 4.86.0
 ## APIVersion: 101045
 ## SavedVariables: FurnitureCatalogue_Settings
-## DependsOn: LibCustomMenu LibAddonMenu-2.0 LibAsync LibCharacterKnowledge
-## OptionalDependsOn: LibDebugLogger LibDebugViewer
+## DependsOn: LibAddonMenu-2.0>=30 LibAsync>=20000 LibCustomMenu>=700
+## OptionalDependsOn: LibCharacterKnowledge>=100000 LibDebugLogger>=250 FurnitureShoppingList
 
 locale\en.lua
 locale\$(language).lua

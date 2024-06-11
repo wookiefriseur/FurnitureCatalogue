@@ -54,6 +54,7 @@ FurCGui_Header_SortBar = Control
 FurCGui_ListHolder_Slider = SliderControl
 ---------- LVL: 07 ----------
 ---------- LVL: 08 ----------
+FurCGui_Header_Bar1_Settings = ButtonControl
 FurCGui_Header_Bar1_Feedback = ButtonControl
 FurC_Label = Control
 FurCGui_Header_Bar1_Hide = ButtonControl
@@ -94,6 +95,7 @@ FurCDevControl = Control
 FurCDevControl_BG = BackdropControl
 FurCDevControl_hide = ButtonControl
 FurCDevControl_clear = ButtonControl
+FurCDevControl_fromTrader = ButtonControl
 FurCDevControlBox = EditControl
 ---------- LVL: 05 ----------
 -- ////// END   : GENERATED FROM FurnitureCatalogue_DevUtility/xml.xml

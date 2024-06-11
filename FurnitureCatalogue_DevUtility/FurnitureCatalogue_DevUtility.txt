@@ -5,7 +5,9 @@
 ## AddonVersion: 2001000
 ## APIVersion: 101045
 ## DependsOn: FurnitureCatalogue
-## OptionalDependsOn: sidTools ESOProfiler LibDebugLogger DebugLogViewer
+## OptionalDependsOn: ESOProfiler
+## OptionalDependsOn: LibDebugLogger>=250
+## OptionalDependsOn: sidTools
 
 Bindings.xml
 xml.xml

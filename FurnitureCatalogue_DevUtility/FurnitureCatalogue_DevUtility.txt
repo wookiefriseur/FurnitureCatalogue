@@ -4,7 +4,7 @@
 ## Version: 2.2.0
 ## AddonVersion: 2002000
 ## APIVersion: 101042
-## DependsOn: FurnitureCatalogue>=4080000
+## DependsOn: FurnitureCatalogue
 ## OptionalDependsOn: ESOProfiler
 ## OptionalDependsOn: LibDebugLogger>=250
 ## OptionalDependsOn: sidTools

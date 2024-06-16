@@ -4,7 +4,7 @@
 ## AddonVersion: 2002000
 ## APIVersion: 101042
 ## SavedVariables: FurnitureCatalogue_Export
-## DependsOn: FurnitureCatalogue>=4080000
+## DependsOn: FurnitureCatalogue
 ## DependsOn: LibAddonMenu-2.0>=30
 
 DataExport.lua

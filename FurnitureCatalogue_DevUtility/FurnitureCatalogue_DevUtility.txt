@@ -1,10 +1,10 @@
 ## Title: FurnitureCatalogue_DevUtility
 ## Author: manavortex
 ## Description: This is a utility addon that helps generating entries for the furniture database.\nYou will only need it if you want to help with development or the database.
-## Version: 2.1.0
-## AddonVersion: 2001000
+## Version: 2.2.0
+## AddonVersion: 2002000
 ## APIVersion: 101043
-## DependsOn: FurnitureCatalogue>=4080000
+## DependsOn: FurnitureCatalogue
 ## OptionalDependsOn: ESOProfiler
 ## OptionalDependsOn: LibDebugLogger>=250
 ## OptionalDependsOn: sidTools

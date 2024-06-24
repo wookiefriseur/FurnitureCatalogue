@@ -538,7 +538,6 @@ FurC.Rumours[ver.WOTL] = {
   [147572] = rumourSource, -- Barricade, Bladed Fence,
   [146069] = rumourSource, -- Target Voriplasm,
   [140297] = rumourSource, -- Replica Throne of Alinor,
-  [134287] = rumourSource, -- Projector TBD,
   [134246] = rumourSource, -- The Law of Gears,
   [132204] = rumourSource, -- Imperial Statue, Truth,
   [132203] = rumourSource, -- Stone, Anvil Limestone,

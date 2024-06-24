@@ -18,7 +18,7 @@ function FurC.ToChat(output, refresh)
     output = FurC.Utils.GetItemLink(output)
   end
 
-  output = sFormat(output)
+  output = sFormat("<<1>>", output)
   output = stripTxt(output) -- remove chat incompatible parts
   if nil == output or "" == output then
     return

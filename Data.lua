@@ -10,6 +10,11 @@ local getItemId = utils.GetItemId
 local getItemLink = utils.GetItemLink
 local getCurrentChar = utils.GetCurrentChar
 
+---@type LinkStyle
+local LINK_STYLE_DEFAULT = LINK_STYLE_DEFAULT
+---@type LinkStyle
+local LINK_STYLE_BRACKETS = LINK_STYLE_BRACKETS
+
 local function addDatabaseEntry(recipeKey, recipeArray)
   if recipeKey and recipeArray and {} ~= recipeArray then
     if FurC.DB[recipeKey] ~= nil then
@@ -196,6 +201,10 @@ function FurC.TryCreateRecipeEntry(recipeListIndex, recipeIndex) -- returns scan
   return scanRecipeIndices(recipeListIndex, recipeIndex)
 end
 
+---Wrapper for GetItemLinkCraftingSkillType
+---@param recipeKey any
+---@param recipeArray any
+---@return TradeSkillType
 function FurC.GetCraftingSkillType(recipeKey, recipeArray)
   local itemLink = getItemLink(recipeKey)
   local craftingSkillType = GetItemLinkCraftingSkillType(itemLink)

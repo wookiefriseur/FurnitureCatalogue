@@ -4,9 +4,11 @@ local FURC_S_SHOPPINGLIST_1 = GetString(SI_FURC_PLUGIN_SL_ADD_ONE)
 local FURC_S_SHOPPINGLIST_5 = GetString(SI_FURC_PLUGIN_SL_ADD_FIVE)
 local FURC_S_TOGGLE_SL = GetString(SI_FURC_TOGGLE_SHOPPINGLIST)
 
-local linkStyle = LINK_STYLE_DEFAULT
 local src = FurC.Constants.ItemSources
 local utils = FurC.Utils
+
+---@type LinkStyle
+local LINK_STYLE_DEFAULT = LINK_STYLE_DEFAULT
 
 local menuEventQueued = false
 
@@ -143,13 +145,13 @@ function FurC_HandleInventoryContextMenu(control)
     or st == SLOT_TYPE_TRADING_HOUSE_POST_ITEM
   then
     local bagId, slotId = ZO_Inventory_GetBagAndIndex(control)
-    itemLink = GetItemLink(bagId, slotId, linkStyle)
+    itemLink = GetItemLink(bagId, slotId, LINK_STYLE_DEFAULT)
   elseif st == SLOT_TYPE_STORE_BUY then
     itemLink = GetStoreItemLink(control.index, LINK_STYLE_DEFAULT)
   elseif st == SLOT_TYPE_TRADING_HOUSE_ITEM_RESULT then
-    itemLink = GetTradingHouseSearchResultItemLink(ZO_Inventory_GetSlotIndex(control), linkStyle)
+    itemLink = GetTradingHouseSearchResultItemLink(ZO_Inventory_GetSlotIndex(control), LINK_STYLE_DEFAULT)
   elseif st == SLOT_TYPE_TRADING_HOUSE_ITEM_LISTING then
-    itemLink = GetTradingHouseListingItemLink(ZO_Inventory_GetSlotIndex(control), linkStyle)
+    itemLink = GetTradingHouseListingItemLink(ZO_Inventory_GetSlotIndex(control), LINK_STYLE_DEFAULT)
   end
 
   if not utils.IsFurniture(itemLink) then

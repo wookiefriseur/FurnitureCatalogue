@@ -6,6 +6,16 @@ FurCDevControl_LinkHandlerBackup_OnLinkMouseUp = nil
 this.textbox = this.textbox or FurCDevControlBox
 local textbox = this.textbox
 
+---@type LinkStyle
+local LINK_STYLE_DEFAULT = LINK_STYLE_DEFAULT
+
+local sFormat = zo_strformat
+local sLower = LocaleAwareToLower
+
+local function toLower(str)
+  return sLower(sFormat("<<1>>", str))
+end
+
 --[[
 CachedItems[itemId] =
 {
@@ -50,17 +60,13 @@ local achievementTable = {}
 local questTable = {}
 local zoneTable = {}
 
-FurCDev.Achievements = achievementTable
-FurCDev.Quests = questTable
-FurCDev.Zones = zoneTable
-
 -- Inspired by AchievementFinder from Rhyono
 local function buildAchievementTable()
   for id = 11, MAX_ACHIEVEMENTS + 11 do
     local achieveName = select(1, GetAchievementInfo(id))
     if achieveName ~= "" then
       -- Save gendered and lowercased achievement name
-      achievementTable[id] = LocaleAwareToLower(zo_strformat(achieveName))
+      achievementTable[id] = toLower(achieveName)
     end
   end
 end
@@ -193,11 +199,10 @@ end
 
 --- HELPER FUNCTIONS ---
 
-local achievementTable = {}
 ---Get single achievementId from achievementName, no partial matches
 ---@param achievementName string Exact localised Name (from tooltip)
 ---@return integer achievementId or 0
-function this.GetAchievementId(achievementName)
+local function getAchievementId(achievementName)
   if not achievementName or achievementName == "" then
     return 0
   end
@@ -210,13 +215,13 @@ function this.GetAchievementId(achievementName)
       local achieveName = select(1, GetAchievementInfo(id))
       if achieveName ~= "" then
         -- Save localised and lowercased achievement name
-        achievementTable[id] = LocaleAwareToLower(zo_strformat(achieveName))
+        achievementTable[id] = toLower(achieveName)
       end
     end
   end
 
   -- making sure that the achievement name is the same like in the lookup table
-  achievementName = LocaleAwareToLower(zo_strformat(achievementName))
+  achievementName = toLower(achievementName)
   for id, name in pairs(achievementTable) do
     if name == achievementName then
       return id
@@ -239,7 +244,7 @@ local function findAchievement(achievementName)
     buildAchievementTable()
   end
 
-  achievementName = LocaleAwareToLower(zo_strformat(achievementName))
+  achievementName = toLower(achievementName)
   for id, name in pairs(achievementTable) do
     if string.find(name, achievementName) then
       table.insert(results, zo_strformat("<<1>>: <<2>>", id, name))
@@ -263,7 +268,7 @@ local function findQuest(questName)
     return results
   end
 
-  questName = LocaleAwareToLower(zo_strformat(questName))
+  questName = toLower(questName)
   for id, name in pairs(questTable) do
     if string.find(LocaleAwareToLower(name), questName) then
       results[id] = name
@@ -287,7 +292,7 @@ local function findZone(zoneName)
     return results
   end
 
-  zoneName = LocaleAwareToLower(zo_strformat(zoneName))
+  zoneName = toLower(zoneName)
   for id, name in pairs(zoneTable) do
     if string.find(LocaleAwareToLower(name), zoneName) then
       results[id] = name
@@ -296,10 +301,6 @@ local function findZone(zoneName)
   return results
 end
 FurCDev.FindZone = findZone
-
---buildAchievementTable()
---buildQuestTable()
---buildZoneTable()
 
 ---Get all furnishings and blueprints detected from the trader
 ---Example: /script d(FurCDev.GetFurnishingsFromStore())
@@ -355,7 +356,7 @@ function this.GetStoreFurnishingInfo(storeIndex)
   local _, name, _, price, _, _, _, _, _, currencyType1, currencyQuantity1, _, _, _, _, buyErrorStringId =
     GetStoreEntryInfo(storeIndex)
 
-  item.name = zo_strformat("<<1>>", name)
+  item.name = sFormat("<<1>>", name)
 
   if price == 0 then
     price = 0 + currencyQuantity1

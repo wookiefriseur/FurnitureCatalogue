@@ -6,6 +6,8 @@ local this = {}
 
 local utils = FurC.Utils
 
+local sFormat = zo_strformat
+
 ---Get the required achievement for a furnishing
 ---@param item string|number itemlink or ID
 ---@return table achievementTable default values, if not found: {id=0, name="", link=""}
@@ -21,7 +23,7 @@ function this.GetAchievementForFurnishing(item)
   local achStr = FurC.getAchievementVendorSource(itemId, nil, false)
   achievement.link = string.match(achStr, "(|H0:achievement:%d+:%d+:%d+|h|h)") or ""
   achievement.id = GetAchievementIdFromLink(achievement.link)
-  achievement.name = zo_strformat("<<1>>", GetAchievementName(achievement.id))
+  achievement.name = sFormat("<<1>>", GetAchievementName(achievement.id))
 
   return achievement
 end

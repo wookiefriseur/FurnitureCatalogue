@@ -7,6 +7,9 @@ local this = {}
 local sJoin = zo_strjoin
 local sFormat = zo_strformat
 
+---@type LinkStyle
+local LINK_STYLE_DEFAULT = LINK_STYLE_DEFAULT
+
 local colours = FurC.Constants.Colours
 
 --[[_______________________
@@ -460,7 +463,6 @@ this.FmtCrownCrate = fmtCrownCrate
 local strQuest = GetString(SI_FURC_SRC_QUEST)
 ---Format a quest
 ---@param questId? number defaults to 0 = no quest
-
 ---@param info? string additional infotext or description
 ---@param ... string location strings (raw)
 ---@return string questString like "Quest: in Bangkorai ('ABC', daily)"

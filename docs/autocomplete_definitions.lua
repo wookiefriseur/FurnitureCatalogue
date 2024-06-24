@@ -479,11 +479,43 @@ SI_FURC_VERBOSE_STARTUP =
 
 -- ESOAPI
 
+---@class ZO_Object
+---@class icon : string
+---@class StoreEntryType : number
+---@class StoreFailure : number
+---@class TradeSkillType : number
+---@class ProvisionerSpecialIngredientType : number
+
+---Get account name
+---@return string name like "@accountName"
+function GetDisplayName()
+  return ""
+end
+
 ---Get localised quest name by id
 ---@param questId integer
 ---@return string name or empty string
 function GetQuestName(questId)
   return ""
+end
+
+--- @param achievementId integer
+--- @return string name
+function GetAchievementName(achievementId)
+  return ""
+end
+
+--- @param craftingSkillType TradeSkillType
+--- @return string name
+function GetCraftingSkillName(craftingSkillType)
+  return ""
+end
+
+---@param recipeListIndex luaindex
+---@param recipeIndex luaindex
+---@return boolean known, string name, integer numIngredients, integer provisionerLevelReq, integer qualityReq, ProvisionerSpecialIngredientType specialIngredientType, TradeSkillType requiredCraftingStationType, integer resultItemId
+function GetRecipeInfo(recipeListIndex, recipeIndex)
+  return false, "", 0, 0, 0, 0, 0, 0
 end
 
 --- @param currencyType number
@@ -492,6 +524,12 @@ end
 --- @return string name
 function GetCurrencyName(currencyType, isSingular, isLower)
   return ""
+end
+
+--- @param entryIndex luaindex|number
+--- @return icon textureName, string name, integer stack, integer price, integer sellPrice, boolean meetsRequirementsToBuy, boolean meetsRequirementsToUse, integer quality, boolean questNameColor, CurrencyType currencyType1, integer currencyQuantity1, CurrencyType currencyType2, integer currencyQuantity2, StoreEntryType entryType, StoreFailure buyStoreFailure, integer buyErrorStringId
+function GetStoreEntryInfo(entryIndex)
+  return "", "", 0, 0, 0, false, false, 0, false, 0, 0, 0, 0, 0, 0, 0
 end
 
 --- @param unitTag string
@@ -510,33 +548,14 @@ function GetAchievementLink(achievementId, linkStyle)
   return ""
 end
 
---[[ NUMBER FORMATTING
-
-Formatting and Localizing Numbers:
-The ZO_LocalizeDecimalNumber function in libraries/globals/localization.lua provides this function to format numbers nicely for humans.
-
-  Usage is simple: call this function on your number, and then pass the result through the `zo_strformat` function to localize it. If you do not, you will use English localization even in foreign languages.
-
-```lua
-zo_strformat("<<1>>", ZO_LocalizeDecimalNumber(1000000))
--- in English: 1,000,000
--- in German: 1.000.000
-```
-
-This also correctly handles decimals:
-```lua
-zo_strformat("<<1>>", ZO_LocalizeDecimalNumber(1000.987))
--- in English: 1,000.987
--- in German: 1.000,987
-```
-
-You should always use this method to format numbers that people will read.
-
-Additional number formatting functions, which abbreviate the value (e.g. 10000 => 10k) are:
-- `ZO_AbbreviateNumber(amount, precision, useUppercaseSuffixes)`
-- `ZO_AbbreviateAndLocalizeNumber(amount, precision, useUppercaseSuffixes)`
-
-]]
+--- Inserts elements from table1 into table2
+--- {"a",nil,"c"} x {nil, "b"} -> {"a", "b", "c"}
+---@param source table input table
+---@param dest table destination table, will be mutated
+---@return table dest
+function ZO_DeepTableCopy(source, dest)
+  return {}
+end
 
 --- Formats a string using the provided arguments.
 ---
@@ -649,7 +668,6 @@ Additional number formatting functions, which abbreviate the value (e.g. 10000 =
 --- - `<<ma:1>> Dungeon^n,in` => `einige Dungeons` ("some dungeons")
 ---
 ---@param format string The format of the string like "Hello <<1>>"
-
 ---@param arg1 string|number positional arg
 ---@param arg2? string|number positional arg
 ---@param arg3? string|number positional arg
@@ -657,9 +675,9 @@ Additional number formatting functions, which abbreviate the value (e.g. 10000 =
 ---@param arg5? string|number positional arg
 ---@param arg6? string|number positional arg
 ---@param arg7? string|number positional arg
-
 ---@return string formatted result
 ---@see esoui [ESOUI-Documentation](https://wiki.esoui.com/How_to_format_strings_with_zo_strformat)
+---@diagnostic disable-next-line: lowercase-global
 function zo_strformat(format, arg1, arg2, arg3, arg4, arg5, arg6, arg7)
   return ""
 end
@@ -668,9 +686,14 @@ end
 ---@param separator string glue
 ---@param ... string items
 ---@return string
+---@diagnostic disable-next-line: lowercase-global
 function zo_strjoin(separator, ...)
   return ""
 end
+
+---@class MAIL_INBOX
+---@field GetOpenMailId fun(self: MAIL_INBOX): id64
+MAIL_INBOX = {}
 
 --- @alias CurrencyType : number
 ---| 0 # CURT_NONE (No currency)
@@ -685,7 +708,7 @@ end
 ---| 9 # CURT_EVENT_TICKETS (Event Tickets)
 ---| 10 # CURT_UNDAUNTED_KEYS (Undaunted Keys)
 ---| 11 # CURT_ENDEAVOR_SEALS (Seals of Endeavor)
----| 12 # CURT_ENDLESS_DUNGEON (Infinite Archive)
+---| 12 # CURT_ARCHIVAL_FORTUNES (Infinite Archive)
 
 ---@type CurrencyType
 CURT_NONE = 0
@@ -712,6 +735,10 @@ CURT_UNDAUNTED_KEYS = 10
 ---@type CurrencyType
 CURT_ENDEAVOR_SEALS = 11
 ---@type CurrencyType
+CURT_ARCHIVAL_FORTUNES = 12
+---@type CurrencyType
+---@deprecated
+---@see CURT_ARCHIVAL_FORTUNES
 CURT_ENDLESS_DUNGEON = 12
 
 ---@alias FormatType : number

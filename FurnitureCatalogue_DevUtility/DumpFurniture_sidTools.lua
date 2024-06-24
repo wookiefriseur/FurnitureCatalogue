@@ -2,6 +2,9 @@ local recipeResultIds = {}
 
 local this = FurCDev or {}
 
+---@type LinkStyle
+local LINK_STYLE_BRACKETS = LINK_STYLE_BRACKETS
+
 -- skip dump functionality without sidTools
 if not FurC or not sidTools then
   return

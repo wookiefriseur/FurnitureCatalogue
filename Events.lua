@@ -1,6 +1,12 @@
 FurC = FurC or {}
 local utils = FurC.Utils
 
+---@type LinkStyle
+local LINK_STYLE_DEFAULT = LINK_STYLE_DEFAULT
+
+---@type LinkStyle
+local LINK_STYLE_BRACKETS = LINK_STYLE_BRACKETS
+
 local function onRecipeLearned(eventCode, recipeListIndex, recipeIndex)
   local itemlink = GetRecipeResultItemLink(recipeListIndex, recipeIndex, LINK_STYLE_BRACKETS)
   local info = zo_strformat(GetString(SI_FURC_STRING_RECIPELEARNED), itemlink, recipeListIndex, recipeIndex)

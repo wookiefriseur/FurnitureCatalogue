@@ -1482,47 +1482,47 @@ FurC.AchievementVendors[ver.ENDLESS] = {
     [npc.AF] = {
       [203155] = { --Apocrypha Drying Rack, Paper
         itemPrice = 1000,
-        currency = CURT_ENDLESS_DUNGEON,
+        currency = CURT_ARCHIVAL_FORTUNES,
         achievement = 3765, -- A Little Help Never Hurt
       },
       [203153] = { --Apocrypha Pedestal
         itemPrice = 5500,
-        currency = CURT_ENDLESS_DUNGEON,
+        currency = CURT_ARCHIVAL_FORTUNES,
         achievement = 3799, -- Battle Ready (Armed Onslaught 5/25)
       },
       [203158] = { --Apocrypha Plant, Languid Tentacles
         itemPrice = 20000,
-        currency = CURT_ENDLESS_DUNGEON,
+        currency = CURT_ARCHIVAL_FORTUNES,
         achievement = 3798, -- Archive's Most Adored
       },
       [203152] = { --Apocrypha Window, Eye
         itemPrice = 6800,
-        currency = CURT_ENDLESS_DUNGEON,
+        currency = CURT_ARCHIVAL_FORTUNES,
         achievement = 3763, -- probably "Fabled Foil" after rename of "Dynamic Destroyer"
       },
       [203157] = { --Apocryphal Obelisk
         itemPrice = 7500,
-        currency = CURT_ENDLESS_DUNGEON,
+        currency = CURT_ARCHIVAL_FORTUNES,
         achievement = 3769, -- First Splurge!
       },
       [203154] = { --Choral Altar
         itemPrice = 7500,
-        currency = CURT_ENDLESS_DUNGEON,
+        currency = CURT_ARCHIVAL_FORTUNES,
         achievement = 3805, -- Studying Up
       },
       [203159] = { --Daedric Arch, Glass
         itemPrice = 6500,
-        currency = CURT_ENDLESS_DUNGEON,
+        currency = CURT_ARCHIVAL_FORTUNES,
         achievement = 3760, -- Heavy Hitter
       },
       [203160] = { --Endless Archive Access, Replica
         itemPrice = 6000,
-        currency = CURT_ENDLESS_DUNGEON,
+        currency = CURT_ARCHIVAL_FORTUNES,
         achievement = 3802, -- A Sturdy Shield
       },
       [203156] = { --Endless Archive Index, Replica
         itemPrice = 25000,
-        currency = CURT_ENDLESS_DUNGEON,
+        currency = CURT_ARCHIVAL_FORTUNES,
         achievement = 3772, -- Running the Gauntlet
       },
     },

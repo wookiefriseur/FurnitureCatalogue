@@ -10,7 +10,7 @@ function FurC.CreateSettings(savedVars, defaults)
     version = tostring(FurC.version),
     registerForRefresh = true,
     registerForDefaults = true,
-    slashCommand = "/furc",
+    slashCommand = "/furc", -- LibAddonMenu2:OpenToPanel("FurC_OptionsPanel")
     website = FurC.website,
   }
   LAM:RegisterAddonPanel("FurC_OptionsPanel", panelData)

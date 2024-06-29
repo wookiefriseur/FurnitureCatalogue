@@ -8,12 +8,14 @@ This file contains FurnitureCatalogue specific components that the IDE is not sm
 This includes:
 - global localisation strings that are defined locally
 - GUI controls, that are composed of XML and Strings
+- library calls, that cannot be autocompleted from including the library in the IDE
+- more detailed documentation for used API functions
 
 It should not include:
-- undocumented or overwritten functions
+- undocumented FurnitureCatalogue functions
   - try to use documentation instead
   - try to avoid overwriting existing functions
-- ESO globals
+- unrelated ESO globals
   - use a mix of Baertrams generated ESOAPI files and your own custom files instead
   - see https://github.com/Baertram/IntelliJ_ESOUI_AutoCompletion
 --]]
@@ -643,12 +645,13 @@ end
 ---
 --- - `c` : `ABC DE F` => `aBC DE F` (lowercase first letter)
 --- - `C` : `abc de f` => `Abc de f` (uppercase first letter)
---- - `t` : `abc de f` => `Abc De f` (uppercase 1st each word)
---- - `T` : `abc de f` => `Abc De F` (uppearcase 1st each string)
---- - `n` : `3` => `three` (number to text)
---- - `N` : `3` => `Three` (number to text, capitalised)
+--- - `f` : `10,000.5` => `10.000,5` (localise number from EN to user locale (here EN to DE))
 --- - `i`/`I` : `1` => `1st` (number to ordinal)
+--- - `N` : `3` => `Three` (number to text, capitalised)
+--- - `n` : `3` => `three` (number to text)
 --- - `R` : `12` => `XII` (number to roman)
+--- - `T` : `abc de f` => `Abc De F` (uppearcase 1st each string)
+--- - `t` : `abc de f` => `Abc De f` (uppercase 1st each word)
 --- - `X` : `Dungeon^n,in` => `Dungeon^n,in` (no formatting)
 --- - `z` : `AÖÄẞ` => `aöäß` (to lowercase)
 --- - `Z` : `aöäß` => `AÖÄẞ` (to uppercase)

@@ -241,8 +241,10 @@ local strings = {
   SI_FURC_STRING_CRAFTABLE_BY = "Can be crafted by ",
   SI_FURC_STRING_DUNG = "dungeon",
 
-  SI_FURC_STRING_MENU_ADD_ITEMS_NAME = "Add items to known/unknown recipes?",
-  SI_FURC_STRING_MENU_ADD_ITEMS_TT = "You shouldn't notice any lag",
+  SI_FURC_STRING_MENU_ADD_ICONS_INV_NAME = "Add icons to known/unknown recipes?",
+  SI_FURC_STRING_MENU_ADD_ICONS_INV_TT = "You shouldn't notice any lag",
+  SI_FURC_STRING_MENU_ADD_ICONS_GUILD_NAME = "Add icons to known/unknown in guild?",
+  SI_FURC_STRING_MENU_ADD_ICONS_GUILD_TT = "Adds icons to items in guild store and bank",
   SI_FURC_STRING_MENU_CROWN = "Crown store items",
   SI_FURC_STRING_MENU_CROWN_DESC = "The furniture database will update whenever the tooltip shows a furniture item. \nSome items can only be acquired via crown store. \nCheck this box to exclude them from the default filters (you can still see them by selecting 'Crown Store' from source dropdown).",
   SI_FURC_STRING_MENU_CROWN_N = "Hide crown store items?",

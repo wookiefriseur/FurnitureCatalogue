@@ -15,6 +15,13 @@ local function onRecipeLearned(eventCode, recipeListIndex, recipeIndex)
   FurC.UpdateGui()
 end
 
+local function onGuildstoreResultsReady(eventCode)
+  --local resultList = GetControl("ZO_TradingHouseBrowseItemsRightPaneSearchResults")
+  local guildStore = TRADING_HOUSE
+end
+
+local wm = WINDOW_MANAGER
+
 local function createIcon(control)
   local icon =
     WINDOW_MANAGER:CreateControlFromVirtual(control:GetName() .. "FurCIcon", control, "FurC_SlotIconKnownYes")
@@ -29,8 +36,9 @@ local function createIcon(control)
 end
 
 local function getItemKnowledge(itemLink)
-  if FurC.GetUseInventoryIconsOnChar() then
-    return utils.IsCharKnown(itemLink)
+  local recipeArray = FurC.Find(itemLink)
+  if FurC.GetUseIconsThisChar() then
+    return FurC.CanCraft(itemId, recipeArray)
   end
   return utils.IsAccountKnown(itemLink)
 end
@@ -110,5 +118,6 @@ function FurC.SetupInventoryRecipeIcons(calledRecursively)
 end
 
 function FurC.RegisterEvents()
-  EVENT_MANAGER:RegisterForEvent("FurnitureCatalogue", EVENT_RECIPE_LEARNED, onRecipeLearned)
+  em:RegisterForEvent(FurC.Name, EVENT_RECIPE_LEARNED, onRecipeLearned)
+  em:RegisterForEvent(FurC.Name, EVENT_TRADING_HOUSE_RESPONSE_RECEIVED, onGuildstoreResultsReady)
 end

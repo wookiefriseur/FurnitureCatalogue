@@ -508,12 +508,27 @@ function FurC.SetUseInventoryIcons(value)
   FurC.settings["useInventoryIcons"] = value
 end
 
-function FurC.GetUseInventoryIconsOnChar()
-  return FurC.settings["useInventoryIconsOnChar"]
+function FurC.GetUseGuildIcons()
+  return FurC.settings["useGuildIcons"]
 end
 
-function FurC.SetUseInventoryIconsOnChar(value)
-  FurC.settings["useInventoryIconsOnChar"] = value
+function FurC.SetUseGuildIcons(value)
+  FurC.settings["useGuildIcons"] = value
+end
+
+-- TODO: remove in 5.x, defer to LCK
+function FurC.GetUseIconsThisChar()
+  -- version <=4.83
+  local oldVer = FurC.settings["useInventoryIconsOnChar"]
+  FurC.settings["useInventoryIconsOnChar"] = nil
+  -- version > 4.83
+  local newVer = FurC.settings["useIconsThisChar"]
+  FurC.settings["useIconsThisChar"] = newVer or oldVer or false
+  return FurC.settings["useIconsThisChar"]
+end
+
+function FurC.SetUseIconsThisChar(value)
+  FurC.settings["useIconsThisChar"] = value
 end
 
 function FurC.GetHideKnownInventoryIcons()

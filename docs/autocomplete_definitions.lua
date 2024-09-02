@@ -550,6 +550,14 @@ function GetAchievementLink(achievementId, linkStyle)
   return ""
 end
 
+TRADING_HOUSE = {
+  --- @type Control
+  control = nil,
+  --- @type number
+  resultCount = 0,
+  searchResultsControlList = nil,
+}
+
 --- Inserts elements from table1 into table2
 --- {"a",nil,"c"} x {nil, "b"} -> {"a", "b", "c"}
 ---@param source table input table
@@ -558,6 +566,34 @@ end
 function ZO_DeepTableCopy(source, dest)
   return {}
 end
+
+--[[ NUMBER FORMATTING
+
+Formatting and Localizing Numbers:
+The ZO_LocalizeDecimalNumber function in libraries/globals/localization.lua provides this function to format numbers nicely for humans.
+
+  Usage is simple: call this function on your number, and then pass the result through the `zo_strformat` function to localize it. If you do not, you will use English localization even in foreign languages.
+
+```lua
+zo_strformat("<<1>>", ZO_LocalizeDecimalNumber(1000000))
+-- in English: 1,000,000
+-- in German: 1.000.000
+```
+
+This also correctly handles decimals:
+```lua
+zo_strformat("<<1>>", ZO_LocalizeDecimalNumber(1000.987))
+-- in English: 1,000.987
+-- in German: 1.000,987
+```
+
+You should always use this method to format numbers that people will read.
+
+Additional number formatting functions, which abbreviate the value (e.g. 10000 => 10k) are:
+- `ZO_AbbreviateNumber(amount, precision, useUppercaseSuffixes)`
+- `ZO_AbbreviateAndLocalizeNumber(amount, precision, useUppercaseSuffixes)`
+
+]]
 
 --- Formats a string using the provided arguments.
 ---

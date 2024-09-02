@@ -94,15 +94,26 @@ function FurC.CreateSettings(savedVars, defaults)
       type = "submenu", -- Inventory and bank icons
       name = GetString(SI_FURC_STRING_MENU_HEADER_ICONS),
       controls = {
-        { -- checkbox: Add items to known/unknown recipes?
+        { -- checkbox: Add icons to known/unknown inv+bank?
           type = "checkbox",
-          name = GetString(SI_FURC_STRING_MENU_ADD_ITEMS_NAME),
-          tooltip = GetString(SI_FURC_STRING_MENU_ADD_ITEMS_TT),
+          name = GetString(SI_FURC_STRING_MENU_ADD_ICONS_INV_NAME),
+          tooltip = GetString(SI_FURC_STRING_MENU_ADD_ICONS_INV_TT),
           getFunc = function()
             return FurC.GetUseInventoryIcons()
           end,
           setFunc = function(value)
             FurC.SetUseInventoryIcons(value)
+          end,
+        },
+        { -- checkbox: Add icons to known/unknown guild store+bank?
+          type = "checkbox",
+          name = GetString(SI_FURC_STRING_MENU_ADD_ICONS_GUILD_NAME),
+          tooltip = GetString(SI_FURC_STRING_MENU_ADD_ICONS_GUILD_TT),
+          getFunc = function()
+            return FurC.GetUseGuildIcons()
+          end,
+          setFunc = function(value)
+            FurC.SetUseGuildIcons(value)
           end,
         },
         { -- checkbox: Only mark unknown recipes
@@ -115,15 +126,15 @@ function FurC.CreateSettings(savedVars, defaults)
             FurC.SetHideKnownInventoryIcons(value)
           end,
         },
-        { -- checkbox: Add items to known/unknown recipes?
+        { -- checkbox: check knowledge of just the current char?
           type = "checkbox",
           name = GetString(SI_FURC_STRING_MENU_IT_THIS_ONLY),
           tooltip = GetString(SI_FURC_STRING_MENU_IT_THIS_ONLY_TT),
           getFunc = function()
-            return FurC.GetUseInventoryIconsOnChar()
+            return FurC.GetUseIconsThisChar()
           end,
           setFunc = function(value)
-            FurC.SetUseInventoryIconsOnChar(value)
+            FurC.SetUseIconsThisChar(value)
           end,
         },
       },
